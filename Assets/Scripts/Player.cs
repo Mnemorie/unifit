@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Security;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class Player : MonoBehaviour
@@ -26,28 +27,28 @@ public class Player : MonoBehaviour
 
 	    if (Input.GetKeyDown(ControlLeft))
         {
-            Move(Vector3.back);
+            Move(TransformMotionVectorToLocal(Vector3.back));
         }
 
         if (Input.GetKeyDown(ControlRight))
         {
-            Move(Vector3.forward);
+            Move(TransformMotionVectorToLocal(Vector3.forward));
         }
 
         if (Input.GetKeyDown(ControlUp))
         {
-            Move(Vector3.up);
+            Move(TransformMotionVectorToLocal(Vector3.up));
         }
 
         if (Input.GetKeyDown(ControlDown))
         {
-            Move(Vector3.down);
+            Move(TransformMotionVectorToLocal(Vector3.down));
         }
 	}
 
     void Move(Vector3 motion)
     {
-        if (Node.Pick(transform.position, motion) != null)
+        if (Node.Pick(transform, Vector3.zero, motion) != null)
         {
             Debug.LogWarning("NOPE: there is someone there already");
             return;
@@ -62,7 +63,9 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Node.GetNeighborsAt(transform.position + motion).Count == 1)
+        List<Node> neighborsAtTargetPos = Node.GetNeighborsAt(transform, motion);
+
+        if (neighborsAtTargetPos.Count == 1)
         {
             Vector3 diagMotion = SolveDiagonal(motion);
 
@@ -82,14 +85,14 @@ public class Player : MonoBehaviour
 
     Vector3 SolveDiagonal(Vector3 motion)
     {
-        if (Mathf.Abs(motion.z) > 0)
+        if (Mathf.Abs(motion.z) > 0.1f)
         {
-            Node rotationRoot = Node.Pick(transform.position, -Vector3.up);
+            Node rotationRoot = Node.Pick(transform, Vector3.zero, -Vector3.up);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return -Vector3.up;
             }
-            rotationRoot = Node.Pick(transform.position, Vector3.up);
+            rotationRoot = Node.Pick(transform, Vector3.zero, Vector3.up);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return Vector3.up;
@@ -97,30 +100,45 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Node rotationRoot = Node.Pick(transform.position, -Vector3.forward);
+            Node rotationRoot = Node.Pick(transform, Vector3.zero, -Vector3.forward);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return -Vector3.forward;
             }
-            rotationRoot = Node.Pick(transform.position, Vector3.forward);
+            rotationRoot = Node.Pick(transform, Vector3.zero, Vector3.forward);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return Vector3.forward;
             }  
         }
 
-        //List<Node> neighbors = Node.GetNeighborsAt(transform.position + motion + diagonalAlteration);
-        //if (neighbors.Count > 0 && neighbors)
-        //{
-        //    transform.Translate(motion + Vector3.forward, Space.World);
-        //    return;
-        //}
-        //if (Node.GetNeighborsAt(transform.position + motion + Vector3.back).Count > 0)
-        //{
-        //    transform.Translate(motion + Vector3.back, Space.World);
-        //    return;
-        //}
-
         return Vector3.zero;
+    }
+
+    Vector3 TransformMotionVectorToLocal(Vector3 v)
+    {
+     //   return v;
+
+        if (Vector3.Angle(Vector3.up, transform.up) < 45)
+        {
+            Debug.Log("up is upwards");
+            return v;
+        }
+        
+        if (Vector3.Angle(Vector3.up, transform.up) > 135)
+        {
+            Debug.Log("up is downwards");
+            return -v;
+        }
+
+        Vector3 c = Vector3.Cross(Vector3.up, transform.up);
+        if (c.x < 0)
+        {
+            Debug.Log("up is leftwards");
+            return Quaternion.AngleAxis(90, Vector3.right) * v;
+        }
+        
+        Debug.Log("up is rightwards");
+        return Quaternion.AngleAxis(90, Vector3.left) * v;
     }
 }

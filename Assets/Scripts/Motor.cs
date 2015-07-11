@@ -15,17 +15,7 @@ public class Motor : MonoBehaviour
 
     public void Move(Vector3 motion)
     {
-        if (IsMoving)
-        {
-            Debug.LogError("cannot move on moving motor");
-        }
-
-        IsMoving = true;
-        IsAnybodyMoving = true;
-        IntermediatePosition = Vector3.zero;
-        TargetPosition = transform.position + motion;
-
-        actualSpeed = Speed;
+        Move(motion, Vector3.zero);
     }
 
     public void Move(Vector3 motion1, Vector3 motion2)
@@ -37,8 +27,17 @@ public class Motor : MonoBehaviour
 
         IsMoving = true;
         IsAnybodyMoving = true;
-        IntermediatePosition = transform.position + motion1;
-        TargetPosition = IntermediatePosition + motion2;
+
+        if (motion2 == Vector3.zero)
+        {
+            IntermediatePosition = Vector3.zero;
+            TargetPosition = transform.localPosition + motion1;
+        }
+        else
+        {
+            IntermediatePosition = transform.localPosition + motion1;
+            TargetPosition = IntermediatePosition + motion2;
+        }
 
         actualSpeed = Speed * 2;
     }
@@ -50,9 +49,9 @@ public class Motor : MonoBehaviour
             Vector3 target = IntermediatePosition != Vector3.zero ? IntermediatePosition : TargetPosition;
 
             float delta = actualSpeed * Time.fixedDeltaTime;
-            if (delta >= Vector3.Distance(transform.position, target))
+            if (delta >= Vector3.Distance(transform.localPosition, target))
             {
-                transform.position = target;
+                transform.localPosition = target;
 
                 if (IntermediatePosition != Vector3.zero)
                 {
@@ -67,7 +66,7 @@ public class Motor : MonoBehaviour
             }
             else
             {
-                transform.Translate((target - transform.position).normalized * delta, Space.World);
+                transform.Translate((target - transform.localPosition).normalized * delta, Space.Self);
             }
         }
     }

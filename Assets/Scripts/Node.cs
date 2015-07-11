@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -21,24 +22,24 @@ public class Node : MonoBehaviour
 
     public void RefreshNeighbors()
     {
-        Neighbors = Scan(transform.position);
+        Neighbors = Scan(transform, Vector3.zero);
     }
 
-    public static Dictionary<Direction, Node> Scan(Vector3 position)
+    public static Dictionary<Direction, Node> Scan(Transform trf, Vector3 offset)
     {
         Dictionary<Direction, Node> neighbors = new Dictionary<Direction, Node>();
 
-        neighbors[Direction.Up] = Pick(position, Vector3.up);
-        neighbors[Direction.Down] = Pick(position, -Vector3.up);
-        neighbors[Direction.Left] = Pick(position, -Vector3.forward);
-        neighbors[Direction.Right] = Pick(position, Vector3.forward);
+        neighbors[Direction.Up] = Pick(trf, offset, Vector3.up);
+        neighbors[Direction.Down] = Pick(trf, offset, -Vector3.up);
+        neighbors[Direction.Left] = Pick(trf, offset, -Vector3.forward);
+        neighbors[Direction.Right] = Pick(trf, offset, Vector3.forward);
 
         return neighbors;
     }
 
-    public static Node Pick(Vector3 pos, Vector3 dir)
+    public static Node Pick(Transform trf, Vector3 offset, Vector3 dir)
     {
-        Ray ray = new Ray(pos, dir);
+        Ray ray = new Ray(trf.position + offset, trf.TransformDirection(dir));
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 1, 1 << LayerMask.NameToLayer("players")))
@@ -66,9 +67,9 @@ public class Node : MonoBehaviour
         return neighbors;
     }
 
-    public static List<Node> GetNeighborsAt(Vector3 pos)
+    public static List<Node> GetNeighborsAt(Transform trf, Vector3 offset)
     {
-        Dictionary<Node.Direction, Node> neighborMap = Scan(pos);
+        Dictionary<Node.Direction, Node> neighborMap = Scan(trf, trf.TransformDirection(offset));
         List<Node> neighbors = new List<Node>(neighborMap.Values);
         neighbors.RemoveAll(n => n == null);
         return neighbors;
@@ -93,6 +94,22 @@ public class Node : MonoBehaviour
         foreach (Node n in FindObjectsOfType<Node>())
         {
             n.RefreshNeighbors();
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (gameObject.name == "player1")
+        {
+            if (Neighbors != null)
+            {
+                foreach (Node n in GetNeighbors())
+                {
+                    Gizmos.DrawLine(transform.position + Vector3.right, n.transform.position + Vector3.right);
+                    // Gizmos.DrawLine(transform.position + Vector3.right, n.storedOffset + Vector3.right);
+                }
+            }
+            
         }
     }
 }
