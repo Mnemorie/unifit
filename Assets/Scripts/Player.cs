@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
             if (diagMotion == Vector3.zero)
             {
                 Debug.LogWarning("NOPE: there is nobody to stay connected to");
+                FirePiston(motion);
                 return;
             }
 
@@ -122,12 +123,14 @@ public class Player : MonoBehaviour
         if (Mathf.Abs(motion.z) > 0.1f)
         {
             Node rotationRoot = Node.PickNode(transform, Vector3.zero, -Vector3.up);
-            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
+            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1 && 
+                !Node.PickFloor(transform, transform.TransformDirection(motion), -Vector3.up))
             {
                 return -Vector3.up;
             }
             rotationRoot = Node.PickNode(transform, Vector3.zero, Vector3.up);
-            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
+            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1 &&
+                !Node.PickFloor(transform, transform.TransformDirection(motion), Vector3.up))
             {
                 return Vector3.up;
             }
@@ -135,12 +138,14 @@ public class Player : MonoBehaviour
         else
         {
             Node rotationRoot = Node.PickNode(transform, Vector3.zero, -Vector3.forward);
-            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
+            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1 &&
+                !Node.PickFloor(transform, transform.TransformDirection(motion), -Vector3.forward))
             {
                 return -Vector3.forward;
             }
             rotationRoot = Node.PickNode(transform, Vector3.zero, Vector3.forward);
-            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
+            if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1 && 
+                !Node.PickFloor(transform, transform.TransformDirection(motion), -Vector3.up))
             {
                 return Vector3.forward;
             }  
