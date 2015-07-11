@@ -12,6 +12,11 @@ public class Player : MonoBehaviour
     private Node Node;
     private Motor Motor;
 
+    public PistonMotion LeftPiston;
+    public PistonMotion RightPiston;
+    public PistonMotion UpPiston;
+    public PistonMotion DownPiston;
+
 	void Start () 
     {
         Node = GetComponent<Node>();
@@ -46,11 +51,39 @@ public class Player : MonoBehaviour
         }
 	}
 
+    void FirePiston(Vector3 direction)
+    {
+        if (direction.y > 0.5f)
+        {
+            UpPiston.SetPushing();
+        }
+        else if (direction.y < -0.5f)
+        {
+            DownPiston.SetPushing();
+        }
+        else if (direction.z < -0.5f)
+        {
+            LeftPiston.SetPushing();
+        }
+        else
+        {
+            RightPiston.SetPushing();
+        }
+    }
+
     void Move(Vector3 motion)
     {
-        if (Node.Pick(transform, Vector3.zero, motion) != null)
+        if (Node.PickFloor(transform, Vector3.zero, motion))
         {
-            Debug.LogWarning("NOPE: there is someone there already");
+            Debug.LogWarning("NOPE: plancher.");
+            FirePiston(motion);
+            return;
+        }
+
+        if (Node.PickNode(transform, Vector3.zero, motion) != null)
+        {
+            Debug.LogWarning("NOPE: there is someone there already. Firing piston in other direction instead.");
+            FirePiston(-motion);
             return;
         }
 
@@ -59,6 +92,7 @@ public class Player : MonoBehaviour
             if (n.HasForOnlyNeighbor(Node))
             {
                 Debug.LogWarning("NOPE: this would orphan a node");
+                FirePiston(motion);
                 return;
             }
         }
@@ -87,12 +121,12 @@ public class Player : MonoBehaviour
     {
         if (Mathf.Abs(motion.z) > 0.1f)
         {
-            Node rotationRoot = Node.Pick(transform, Vector3.zero, -Vector3.up);
+            Node rotationRoot = Node.PickNode(transform, Vector3.zero, -Vector3.up);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return -Vector3.up;
             }
-            rotationRoot = Node.Pick(transform, Vector3.zero, Vector3.up);
+            rotationRoot = Node.PickNode(transform, Vector3.zero, Vector3.up);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return Vector3.up;
@@ -100,12 +134,12 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Node rotationRoot = Node.Pick(transform, Vector3.zero, -Vector3.forward);
+            Node rotationRoot = Node.PickNode(transform, Vector3.zero, -Vector3.forward);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return -Vector3.forward;
             }
-            rotationRoot = Node.Pick(transform, Vector3.zero, Vector3.forward);
+            rotationRoot = Node.PickNode(transform, Vector3.zero, Vector3.forward);
             if (rotationRoot != null && rotationRoot.GetNeighbors().Count > 1)
             {
                 return Vector3.forward;
@@ -117,8 +151,6 @@ public class Player : MonoBehaviour
 
     Vector3 TransformMotionVectorToLocal(Vector3 v)
     {
-     //   return v;
-
         if (Vector3.Angle(Vector3.up, transform.up) < 45)
         {
             Debug.Log("up is upwards");

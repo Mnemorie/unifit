@@ -13,7 +13,7 @@ public class CameraMatch : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 
 		if (followThis == null)
 			return;
