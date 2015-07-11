@@ -72,10 +72,12 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            motion += diagMotion;
+            Motor.Move(motion, diagMotion);
         }
-
-        Motor.Move(motion);
+        else
+        {
+            Motor.Move(motion);
+        }
     }
 
     Vector3 SolveDiagonal(Vector3 motion)
