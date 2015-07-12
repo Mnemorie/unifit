@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
+    public bool UseKeyboard = true;
+
     public KeyCode ControlLeft;
     public KeyCode ControlRight;
     public KeyCode ControlUp;
@@ -33,24 +35,49 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (Gamepad.LeftPressed())
+        if (UseKeyboard)
         {
-            Move(TransformMotionVectorToLocal(Vector3.back));
-        }
+            if (Input.GetKeyDown(ControlLeft))
+            {
+                Move(TransformMotionVectorToLocal(Vector3.back));
+            }
 
-        if (Gamepad.RightPressed())
-        {
-            Move(TransformMotionVectorToLocal(Vector3.forward));
-        }
+            if (Input.GetKeyDown(ControlRight))
+            {
+                Move(TransformMotionVectorToLocal(Vector3.forward));
+            }
 
-        if (Gamepad.UpPressed())
-        {
-            Move(TransformMotionVectorToLocal(Vector3.up));
-        }
+            if (Input.GetKeyDown(ControlUp))
+            {
+                Move(TransformMotionVectorToLocal(Vector3.up));
+            }
 
-        if (Gamepad.DownPressed())
+            if (Input.GetKeyDown(ControlDown))
+            {
+                Move(TransformMotionVectorToLocal(Vector3.down));
+            }
+        }
+        else
         {
-            Move(TransformMotionVectorToLocal(Vector3.down));
+            if (Gamepad.LeftPressed())
+            {
+                Move(TransformMotionVectorToLocal(Vector3.back));
+            }
+
+            if (Gamepad.RightPressed())
+            {
+                Move(TransformMotionVectorToLocal(Vector3.forward));
+            }
+
+            if (Gamepad.UpPressed())
+            {
+                Move(TransformMotionVectorToLocal(Vector3.up));
+            }
+
+            if (Gamepad.DownPressed())
+            {
+                Move(TransformMotionVectorToLocal(Vector3.down));
+            }
         }
 	}
 
