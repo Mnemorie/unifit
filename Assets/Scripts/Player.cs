@@ -57,16 +57,15 @@ public class Player : MonoBehaviour
 
     private Node Node;
     private Motor Motor;
-
-    public PistonMotion LeftPiston;
-    public PistonMotion RightPiston;
-    public PistonMotion UpPiston;
-    public PistonMotion DownPiston;
+    private Rigidbody Body;
 
     public GamePad.Index Index;
     public GamePad.Axis Axis;
 
     DPad pad;
+
+    float TimeToPiston = 0;
+    public float PistonCooldown = 1;
 
 	void Start () 
     {
@@ -74,6 +73,8 @@ public class Player : MonoBehaviour
         Motor = GetComponent<Motor>();
 
         pad = new DPad(Index, Axis);
+
+        Body = GetComponentInParent<Rigidbody>();
 	}
 
     public Vector2 DPadAxis;
@@ -94,6 +95,8 @@ public class Player : MonoBehaviour
         pad.Axis = Axis;
         pad.Index = Index;
         pad.Update();
+
+        TimeToPiston -= Time.deltaTime;
 
         if (Motor.IsAnybodyMoving)
         {
@@ -144,65 +147,64 @@ public class Player : MonoBehaviour
                 Move(TransformMotionVectorToLocal(Vector3.down));
             }
 
-            if (GamePad.GetButtonDown(PistonUp, Index))
+            if (TimeToPiston <= 0)
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.up));
-            }
+                if (GamePad.GetButtonDown(PistonUp, Index))
+                {
+                    FirePiston(TransformMotionVectorToLocal(Vector3.up));
+                }
 
-            if (GamePad.GetButtonDown(PistonDown, Index))
-            {
-                FirePiston(TransformMotionVectorToLocal(Vector3.down));
-            }
+                if (GamePad.GetButtonDown(PistonDown, Index))
+                {
+                    FirePiston(TransformMotionVectorToLocal(Vector3.down));
+                }
 
-            if (GamePad.GetButtonDown(PistonLeft, Index))
-            {
-                FirePiston(TransformMotionVectorToLocal(Vector3.back));
-            }
+                if (GamePad.GetButtonDown(PistonLeft, Index))
+                {
+                    FirePiston(TransformMotionVectorToLocal(Vector3.back));
+                }
 
-            if (GamePad.GetButtonDown(PistonRight, Index))
-            {
-                FirePiston(TransformMotionVectorToLocal(Vector3.forward));
+                if (GamePad.GetButtonDown(PistonRight, Index))
+                {
+                    FirePiston(TransformMotionVectorToLocal(Vector3.forward));
+                }
             }
         }
 	}
+
+    public float Power = 10;
 
     void FirePiston(Vector3 direction)
     {
         if (Node.PickNode(transform, Vector3.zero, direction) != null)
         {
-            Fail();
+            FeedbackFail();
             return;
         }
 
-        if (direction.y > 0.5f)
+        Vector3 impulse = -transform.TransformDirection(direction) * Power;
+
+        if (Node.PickFloor(transform, Vector3.zero, direction))
         {
-            UpPiston.SetPushing();
+            impulse *= 10;
         }
-        else if (direction.y < -0.5f)
-        {
-            DownPiston.SetPushing();
-        }
-        else if (direction.z < -0.5f)
-        {
-            LeftPiston.SetPushing();
-        }
-        else
-        {
-            RightPiston.SetPushing();
-        }
+
+        Body.AddForceAtPosition(impulse, transform.position, ForceMode.Impulse);
+
+        TimeToPiston = PistonCooldown;
     }
 
     void Move(Vector3 motion)
     {
         if (Node.PickFloor(transform, Vector3.zero, motion))
         {
-            Fail();
+            FeedbackFail();
             return;
         }
 
         if (Node.PickNode(transform, Vector3.zero, motion) != null)
         {
-            Fail();
+            FeedbackFail();
             return;
         }
 
@@ -210,7 +212,7 @@ public class Player : MonoBehaviour
         {
             if (n.HasForOnlyNeighbor(Node))
             {
-                Fail();
+                FeedbackFail();
                 return;
             }
         }
@@ -223,7 +225,7 @@ public class Player : MonoBehaviour
 
             if (diagMotion == Vector3.zero)
             {
-                Fail();
+                FeedbackFail();
                 return;
             }
 
@@ -235,7 +237,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Fail()
+    void FeedbackFail()
     {
 
     }
