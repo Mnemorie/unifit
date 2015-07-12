@@ -1,8 +1,50 @@
-﻿using System.Security;
+﻿
+using JetBrains.Annotations;
 using UnityEngine;
 using System.Collections.Generic;
 
 using GamepadInput;
+
+class DPad
+{
+    public GamePad.Index Index;
+    public GamePad.Axis Axis;
+
+    public DPad(GamePad.Index index, GamePad.Axis axis)
+    {
+        Index = index;
+        Axis = axis;
+    }
+
+    Vector2 previousInput;
+    Vector2 currentInput;
+
+    public void Update()
+    {
+        previousInput = currentInput;
+        currentInput = GamePad.GetAxis(Axis, Index);
+    }
+
+    public bool UpJustPressed()
+    {
+        return previousInput.y < 1 && currentInput.y > 0;
+    }
+
+    public bool DownJustPressed()
+    {
+        return previousInput.y > -1 && currentInput.y < 0;
+    }
+
+    public bool LeftJustPressed()
+    {
+        return previousInput.x > -1 && currentInput.x < 0;
+    }
+
+    public bool RightJustPressed()
+    {
+        return previousInput.x < 1 && currentInput.x > 0;
+    }
+}
 
 public class Player : MonoBehaviour
 {
@@ -24,10 +66,14 @@ public class Player : MonoBehaviour
     public GamePad.Index Index;
     public GamePad.Axis Axis;
 
+    DPad pad;
+
 	void Start () 
     {
         Node = GetComponent<Node>();
         Motor = GetComponent<Motor>();
+
+        pad = new DPad(Index, Axis);
 	}
 
     public Vector2 DPadAxis;
@@ -44,6 +90,10 @@ public class Player : MonoBehaviour
         DPadAxis = GamePad.GetAxis(GamePad.Axis.Dpad, Index);
         LeftAxis = GamePad.GetAxis(GamePad.Axis.LeftStick, Index);
         RightAxis = GamePad.GetAxis(GamePad.Axis.RightStick, Index);
+
+        pad.Axis = Axis;
+        pad.Index = Index;
+        pad.Update();
 
         if (Motor.IsAnybodyMoving)
         {
@@ -74,24 +124,22 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Vector2 input = GamePad.GetAxis(Axis, Index);
-
-            if (input.x < 0)
+            if (pad.LeftJustPressed())
             {
                 Move(TransformMotionVectorToLocal(Vector3.back));
             }
 
-            if (input.x > 0)
+            if (pad.RightJustPressed())
             {
                 Move(TransformMotionVectorToLocal(Vector3.forward));
             }
 
-            if (input.y > 0)
+            if (pad.UpJustPressed())
             {
                 Move(TransformMotionVectorToLocal(Vector3.up));
             }
 
-            if (input.y < 0)
+            if (pad.DownJustPressed())
             {
                 Move(TransformMotionVectorToLocal(Vector3.down));
             }
