@@ -57,14 +57,41 @@ public class Node : MonoBehaviour
         return Physics.Raycast(ray, out hit, 1.4f, 1 << LayerMask.NameToLayer("floor"));
     }
 
-    public bool HasForOnlyNeighbor(Node node)
+    public bool IsConnectedToCoreBy(Node node)
     {
-        List<Node> neighbors = GetNeighbors();
-        if (neighbors.Count == 1 && neighbors[0] == node)
+        List<Node> graph = new List<Node>();
+        List<Node> traversed = new List<Node>();
+        CollectConnectedNodes(this, traversed, graph, node);
+
+        foreach (Node n in graph)
         {
-            return true;
+            if (n.GetComponent<Core>())
+            {
+                return false;
+            }
         }
-        return false;
+
+        return true;
+    }
+
+    void CollectConnectedNodes(Node node, List<Node> traversed, List<Node> results, Node ignore)
+    {
+        if (node == ignore || traversed.Contains(node))
+        {
+            return;
+        }
+
+        results.Add(node);
+        traversed.Add(node);
+
+        List<Node> neighbors = node.GetNeighbors();
+        foreach (Node neighbor in neighbors)
+        {
+            if (neighbor != ignore && !results.Contains(neighbor))
+            {
+                CollectConnectedNodes(neighbor, traversed, results, ignore);
+            }
+        }
     }
 
     public List<Node> GetNeighbors()

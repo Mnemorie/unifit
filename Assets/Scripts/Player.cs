@@ -1,5 +1,4 @@
-﻿
-using JetBrains.Annotations;
+﻿using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -58,6 +57,7 @@ class DPad
     }
 }
 
+[SelectionBase]
 public class Player : MonoBehaviour
 {
     public bool UseKeyboard = true;
@@ -126,83 +126,54 @@ public class Player : MonoBehaviour
 
         TimeToPiston -= Time.deltaTime;
 
-        if (Motor.IsAnybodyMoving)
+        if (TimeToPiston < PistonCooldown / 2)
         {
-            return;
+            Flame.GetComponentInChildren<Animator>().SetBool("Burning", false);
         }
 
-        if (UseKeyboard)
+        if (TimeToPiston <= 0)
         {
-            if (Input.GetKeyDown(ControlLeft))
+            if (GamePad.GetButtonDown(PistonUp, Index))
             {
-                Move(TransformMotionVectorToLocal(Vector3.back));
+                FirePiston(TransformMotionVectorToLocal(Vector3.up));
             }
 
-            if (Input.GetKeyDown(ControlRight))
+            if (GamePad.GetButtonDown(PistonDown, Index))
             {
-                Move(TransformMotionVectorToLocal(Vector3.forward));
+                FirePiston(TransformMotionVectorToLocal(Vector3.down));
             }
 
-            if (Input.GetKeyDown(ControlUp))
+            if (GamePad.GetButtonDown(PistonLeft, Index))
             {
-                Move(TransformMotionVectorToLocal(Vector3.up));
+                FirePiston(TransformMotionVectorToLocal(Vector3.back));
             }
 
-            if (Input.GetKeyDown(ControlDown))
+            if (GamePad.GetButtonDown(PistonRight, Index))
             {
-                Move(TransformMotionVectorToLocal(Vector3.down));
+                FirePiston(TransformMotionVectorToLocal(Vector3.forward));
             }
         }
-        else
+
+        if (pad.LeftJustPressed() && !Motor.IsAnybodyMoving)
         {
-            if (pad.LeftJustPressed())
-            {
-                Move(TransformMotionVectorToLocal(Vector3.back));
-            }
-
-            if (pad.RightJustPressed())
-            {
-                Move(TransformMotionVectorToLocal(Vector3.forward));
-            }
-
-            if (pad.UpJustPressed())
-            {
-                Move(TransformMotionVectorToLocal(Vector3.up));
-            }
-
-            if (pad.DownJustPressed())
-            {
-                Move(TransformMotionVectorToLocal(Vector3.down));
-            }
-
-            if (TimeToPiston < PistonCooldown / 2)
-            {
-                Flame.GetComponentInChildren<Animator>().SetBool("Burning", false);
-            }
-
-            if (TimeToPiston <= 0)
-            {
-                if (GamePad.GetButtonDown(PistonUp, Index))
-                {
-                    FirePiston(TransformMotionVectorToLocal(Vector3.up));
-                }
-
-                if (GamePad.GetButtonDown(PistonDown, Index))
-                {
-                    FirePiston(TransformMotionVectorToLocal(Vector3.down));
-                }
-
-                if (GamePad.GetButtonDown(PistonLeft, Index))
-                {
-                    FirePiston(TransformMotionVectorToLocal(Vector3.back));
-                }
-
-                if (GamePad.GetButtonDown(PistonRight, Index))
-                {
-                    FirePiston(TransformMotionVectorToLocal(Vector3.forward));
-                }
-            }
+            Move(TransformMotionVectorToLocal(Vector3.back));
         }
+
+        if (pad.RightJustPressed() && !Motor.IsAnybodyMoving)
+        {
+            Move(TransformMotionVectorToLocal(Vector3.forward));
+        }
+
+        if (pad.UpJustPressed() && !Motor.IsAnybodyMoving)
+        {
+            Move(TransformMotionVectorToLocal(Vector3.up));
+        }
+
+        if (pad.DownJustPressed() && !Motor.IsAnybodyMoving)
+        {
+            Move(TransformMotionVectorToLocal(Vector3.down));
+        }
+
 	}
 
     public float Power = 10;
@@ -251,7 +222,7 @@ public class Player : MonoBehaviour
 
         foreach (Node n in Node.GetNeighbors())
         {
-            if (n.HasForOnlyNeighbor(Node))
+            if (n.IsConnectedToCoreBy(Node))
             {
                 FeedbackFail();
                 return;
