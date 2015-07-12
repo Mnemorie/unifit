@@ -17,10 +17,13 @@ public class Player : MonoBehaviour
     public PistonMotion UpPiston;
     public PistonMotion DownPiston;
 
+    GamepadInput Gamepad;
+
 	void Start () 
     {
         Node = GetComponent<Node>();
         Motor = GetComponent<Motor>();
+        Gamepad = GetComponent<GamepadInput>();
 	}
 
     void Update () 
@@ -30,22 +33,22 @@ public class Player : MonoBehaviour
             return;
         }
 
-	    if (Input.GetKeyDown(ControlLeft))
+        if (Gamepad.LeftPressed())
         {
             Move(TransformMotionVectorToLocal(Vector3.back));
         }
 
-        if (Input.GetKeyDown(ControlRight))
+        if (Gamepad.RightPressed())
         {
             Move(TransformMotionVectorToLocal(Vector3.forward));
         }
 
-        if (Input.GetKeyDown(ControlUp))
+        if (Gamepad.UpPressed())
         {
             Move(TransformMotionVectorToLocal(Vector3.up));
         }
 
-        if (Input.GetKeyDown(ControlDown))
+        if (Gamepad.DownPressed())
         {
             Move(TransformMotionVectorToLocal(Vector3.down));
         }
@@ -75,14 +78,12 @@ public class Player : MonoBehaviour
     {
         if (Node.PickFloor(transform, Vector3.zero, motion))
         {
-            Debug.LogWarning("NOPE: plancher.");
             FirePiston(motion);
             return;
         }
 
         if (Node.PickNode(transform, Vector3.zero, motion) != null)
         {
-            Debug.LogWarning("NOPE: there is someone there already. Firing piston in other direction instead.");
             FirePiston(-motion);
             return;
         }
@@ -91,7 +92,6 @@ public class Player : MonoBehaviour
         {
             if (n.HasForOnlyNeighbor(Node))
             {
-                Debug.LogWarning("NOPE: this would orphan a node");
                 FirePiston(motion);
                 return;
             }
@@ -105,7 +105,6 @@ public class Player : MonoBehaviour
 
             if (diagMotion == Vector3.zero)
             {
-                Debug.LogWarning("NOPE: there is nobody to stay connected to");
                 FirePiston(motion);
                 return;
             }
@@ -158,24 +157,20 @@ public class Player : MonoBehaviour
     {
         if (Vector3.Angle(Vector3.up, transform.up) < 45)
         {
-            Debug.Log("up is upwards");
             return v;
         }
         
         if (Vector3.Angle(Vector3.up, transform.up) > 135)
         {
-            Debug.Log("up is downwards");
             return -v;
         }
 
         Vector3 c = Vector3.Cross(Vector3.up, transform.up);
         if (c.x < 0)
         {
-            Debug.Log("up is leftwards");
             return Quaternion.AngleAxis(90, Vector3.right) * v;
         }
         
-        Debug.Log("up is rightwards");
         return Quaternion.AngleAxis(90, Vector3.left) * v;
     }
 }
