@@ -120,6 +120,12 @@ public class Player : MonoBehaviour
 
     void FirePiston(Vector3 direction)
     {
+        if (Node.PickNode(transform, Vector3.zero, direction) != null)
+        {
+            Fail();
+            return;
+        }
+
         if (direction.y > 0.5f)
         {
             UpPiston.SetPushing();

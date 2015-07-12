@@ -13,6 +13,11 @@ public class Motor : MonoBehaviour
 
     private float actualSpeed;
 
+    void Start()
+    {
+        IsAnybodyMoving = false;
+    }
+
     public void Move(Vector3 motion)
     {
         Move(motion, Vector3.zero);
