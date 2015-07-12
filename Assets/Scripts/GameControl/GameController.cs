@@ -14,11 +14,11 @@ public class GameController : MonoBehaviour {
 
 	private void LoadNextLevel(){
 		this.currentLevel ++;
-		Application.LoadLevel (this.currentLevel); 
+		Application.LoadLevel (Application.loadedLevel +1); 
 	}
 
 	private void RestartLevel(){
-		Application.LoadLevel (this.currentLevel);
+		Application.LoadLevel (Application.loadedLevel);
 	}
 
 
