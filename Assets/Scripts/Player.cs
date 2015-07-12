@@ -10,10 +10,14 @@ class DPad
     public GamePad.Index Index;
     public GamePad.Axis Axis;
 
-    public DPad(GamePad.Index index, GamePad.Axis axis)
+    bool IsLogitechCrap;
+
+    public DPad(GamePad.Index index, GamePad.Axis axis, bool isLogitechCrappy)
     {
         Index = index;
         Axis = axis;
+
+        IsLogitechCrap = isLogitechCrappy;
     }
 
     Vector2 previousInput;
@@ -22,7 +26,15 @@ class DPad
     public void Update()
     {
         previousInput = currentInput;
-        currentInput = GamePad.GetAxis(Axis, Index);
+        if (!IsLogitechCrap)
+        {
+            currentInput = GamePad.GetAxis(Axis, Index);
+        }
+        else
+        {
+            currentInput.x = -GamePad.GetAxis(GamePad.Axis.RightStick, Index).y;
+            currentInput.y = GamePad.GetAxis(GamePad.Axis.Dpad, Index).x;
+        }
     }
 
     public bool UpJustPressed()
@@ -60,8 +72,20 @@ public class Player : MonoBehaviour
     private Rigidbody Body;
     public GameObject Flame;
 
+    public GameObject MoveIndicatorUp;
+    public GameObject MoveIndicatorDown;
+    public GameObject MoveIndicatorLeft;
+    public GameObject MoveIndicatorRight;
+
+    public GameObject PistonIndicatorUp;
+    public GameObject PistonIndicatorDown;
+    public GameObject PistonIndicatorLeft;
+    public GameObject PistonIndicatorRight;
+
     public GamePad.Index Index;
     public GamePad.Axis Axis;
+
+    public bool IsLogitech;
 
     DPad pad;
 
@@ -73,7 +97,7 @@ public class Player : MonoBehaviour
         Node = GetComponent<Node>();
         Motor = GetComponent<Motor>();
 
-        pad = new DPad(Index, Axis);
+        pad = new DPad(Index, Axis, IsLogitech);
 
         Body = GetComponentInParent<Rigidbody>();
 
