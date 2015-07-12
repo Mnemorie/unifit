@@ -92,6 +92,10 @@ public class Player : MonoBehaviour
     float TimeToPiston = 0;
     public float PistonCooldown = 1;
 
+    public Color EyeColor;
+    public Color BigFlameColor;
+    public Color SmallFlameColor;
+
 	void Start () 
     {
         Node = GetComponent<Node>();
@@ -103,6 +107,12 @@ public class Player : MonoBehaviour
 
         Flame = Instantiate(Flame, transform.position, transform.rotation) as GameObject;
         Flame.transform.parent = transform;
+        
+        Flame f = Flame.GetComponent<Flame>();
+        f.SetBigFlameColor(BigFlameColor);
+        f.SetSmallFlameColor(SmallFlameColor);
+
+        GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", EyeColor);
 	}
 
     public Vector2 DPadAxis;
@@ -116,6 +126,12 @@ public class Player : MonoBehaviour
 
     void Update () 
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Application.LoadLevel(Application.loadedLevel);
+            return;
+        }
+
         DPadAxis = GamePad.GetAxis(GamePad.Axis.Dpad, Index);
         LeftAxis = GamePad.GetAxis(GamePad.Axis.LeftStick, Index);
         RightAxis = GamePad.GetAxis(GamePad.Axis.RightStick, Index);
