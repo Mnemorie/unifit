@@ -23,6 +23,7 @@ public class Motor : MonoBehaviour
         if (IsMoving)
         {
             Debug.LogError("cannot move on moving motor");
+            return;
         }
 
         IsMoving = true;

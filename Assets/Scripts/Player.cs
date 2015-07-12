@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using GamepadInput;
+
 public class Player : MonoBehaviour
 {
     public bool UseKeyboard = true;
@@ -19,17 +21,30 @@ public class Player : MonoBehaviour
     public PistonMotion UpPiston;
     public PistonMotion DownPiston;
 
-    GamepadInput Gamepad;
+    public GamePad.Index Index;
+    public GamePad.Axis Axis;
 
 	void Start () 
     {
         Node = GetComponent<Node>();
         Motor = GetComponent<Motor>();
-        Gamepad = GetComponent<GamepadInput>();
 	}
+
+    public Vector2 DPadAxis;
+    public Vector2 LeftAxis;
+    public Vector2 RightAxis;
+
+    public GamePad.Button PistonUp;
+    public GamePad.Button PistonDown;
+    public GamePad.Button PistonLeft;
+    public GamePad.Button PistonRight;
 
     void Update () 
     {
+        DPadAxis = GamePad.GetAxis(GamePad.Axis.Dpad, Index);
+        LeftAxis = GamePad.GetAxis(GamePad.Axis.LeftStick, Index);
+        RightAxis = GamePad.GetAxis(GamePad.Axis.RightStick, Index);
+
         if (Motor.IsAnybodyMoving)
         {
             return;
@@ -59,24 +74,46 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (Gamepad.LeftPressed())
+            Vector2 input = GamePad.GetAxis(Axis, Index);
+
+            if (input.x < 0)
             {
                 Move(TransformMotionVectorToLocal(Vector3.back));
             }
 
-            if (Gamepad.RightPressed())
+            if (input.x > 0)
             {
                 Move(TransformMotionVectorToLocal(Vector3.forward));
             }
 
-            if (Gamepad.UpPressed())
+            if (input.y > 0)
             {
                 Move(TransformMotionVectorToLocal(Vector3.up));
             }
 
-            if (Gamepad.DownPressed())
+            if (input.y < 0)
             {
                 Move(TransformMotionVectorToLocal(Vector3.down));
+            }
+
+            if (GamePad.GetButtonDown(PistonUp, Index))
+            {
+                FirePiston(TransformMotionVectorToLocal(Vector3.up));
+            }
+
+            if (GamePad.GetButtonDown(PistonDown, Index))
+            {
+                FirePiston(TransformMotionVectorToLocal(Vector3.down));
+            }
+
+            if (GamePad.GetButtonDown(PistonLeft, Index))
+            {
+                FirePiston(TransformMotionVectorToLocal(Vector3.back));
+            }
+
+            if (GamePad.GetButtonDown(PistonRight, Index))
+            {
+                FirePiston(TransformMotionVectorToLocal(Vector3.forward));
             }
         }
 	}
@@ -105,13 +142,13 @@ public class Player : MonoBehaviour
     {
         if (Node.PickFloor(transform, Vector3.zero, motion))
         {
-            FirePiston(motion);
+            Fail();
             return;
         }
 
         if (Node.PickNode(transform, Vector3.zero, motion) != null)
         {
-            FirePiston(-motion);
+            Fail();
             return;
         }
 
@@ -119,7 +156,7 @@ public class Player : MonoBehaviour
         {
             if (n.HasForOnlyNeighbor(Node))
             {
-                FirePiston(motion);
+                Fail();
                 return;
             }
         }
@@ -132,7 +169,7 @@ public class Player : MonoBehaviour
 
             if (diagMotion == Vector3.zero)
             {
-                FirePiston(motion);
+                Fail();
                 return;
             }
 
@@ -142,6 +179,11 @@ public class Player : MonoBehaviour
         {
             Motor.Move(motion);
         }
+    }
+
+    void Fail()
+    {
+
     }
 
     Vector3 SolveDiagonal(Vector3 motion)
