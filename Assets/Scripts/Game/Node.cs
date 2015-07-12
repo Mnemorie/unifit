@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -132,19 +131,19 @@ public class Node : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
-        if (gameObject.name == "player1")
-        {
-            if (Neighbors != null)
-            {
-                foreach (Node n in GetNeighbors())
-                {
-                    Gizmos.DrawLine(transform.position + Vector3.right, n.transform.position + Vector3.right);
-                    // Gizmos.DrawLine(transform.position + Vector3.right, n.storedOffset + Vector3.right);
-                }
-            }
+    //void OnDrawGizmos()
+    //{
+    //    if (gameObject.name == "player1")
+    //    {
+    //        if (Neighbors != null)
+    //        {
+    //            foreach (Node n in GetNeighbors())
+    //            {
+    //                Gizmos.DrawLine(transform.position + Vector3.right, n.transform.position + Vector3.right);
+    //                // Gizmos.DrawLine(transform.position + Vector3.right, n.storedOffset + Vector3.right);
+    //            }
+    //        }
             
-        }
-    }
+    //    }
+    //}
 }
