@@ -58,6 +58,7 @@ public class Player : MonoBehaviour
     private Node Node;
     private Motor Motor;
     private Rigidbody Body;
+    public GameObject Flame;
 
     public GamePad.Index Index;
     public GamePad.Axis Axis;
@@ -75,6 +76,9 @@ public class Player : MonoBehaviour
         pad = new DPad(Index, Axis);
 
         Body = GetComponentInParent<Rigidbody>();
+
+        Flame = Instantiate(Flame, transform.position, transform.rotation) as GameObject;
+        Flame.transform.parent = transform;
 	}
 
     public Vector2 DPadAxis;
@@ -147,6 +151,11 @@ public class Player : MonoBehaviour
                 Move(TransformMotionVectorToLocal(Vector3.down));
             }
 
+            if (TimeToPiston < PistonCooldown / 2)
+            {
+                Flame.GetComponentInChildren<Animator>().SetBool("Burning", false);
+            }
+
             if (TimeToPiston <= 0)
             {
                 if (GamePad.GetButtonDown(PistonUp, Index))
@@ -175,6 +184,8 @@ public class Player : MonoBehaviour
     public float Power = 10;
     public float FloorPushMultiplier = 5;
 
+    private float FlameOffset = 0.5f;
+
     void FirePiston(Vector3 direction)
     {
         if (Node.PickNode(transform, Vector3.zero, direction) != null)
@@ -193,6 +204,11 @@ public class Player : MonoBehaviour
         Body.AddForceAtPosition(impulse, transform.position, ForceMode.Impulse);
 
         TimeToPiston = PistonCooldown;
+
+        Flame.transform.localPosition = direction * FlameOffset;
+        Flame.transform.LookAt(transform.position + impulse);
+
+        Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
     }
 
     void Move(Vector3 motion)
