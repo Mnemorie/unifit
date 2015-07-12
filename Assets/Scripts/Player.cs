@@ -173,6 +173,7 @@ public class Player : MonoBehaviour
 	}
 
     public float Power = 10;
+    public float FloorPushMultiplier = 5;
 
     void FirePiston(Vector3 direction)
     {
@@ -186,7 +187,7 @@ public class Player : MonoBehaviour
 
         if (Node.PickFloor(transform, Vector3.zero, direction))
         {
-            impulse *= 10;
+            impulse *= FloorPushMultiplier;
         }
 
         Body.AddForceAtPosition(impulse, transform.position, ForceMode.Impulse);
