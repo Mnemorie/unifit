@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraMatch : MonoBehaviour {
+public class FollowsObject : MonoBehaviour {
 
 	public GameObject followThis;
 	public Vector3 offSet;
