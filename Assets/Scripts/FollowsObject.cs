@@ -7,13 +7,18 @@ public class FollowsObject : MonoBehaviour {
 	public Vector3 offSet;
 	public Vector2 responsiveness;
 
+    Transform EndGoal;
+
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+    {
+        EndGoal = FindObjectOfType<EndsLevel>().transform;
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
+
+        offSet.z = (EndGoal.position.z - followThis.transform.position.z) * 0.25f;
 
 		if (followThis == null)
 			return;

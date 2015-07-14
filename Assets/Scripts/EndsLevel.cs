@@ -5,69 +5,34 @@ public class EndsLevel : MonoBehaviour
 {
 	public GameController gameController;
 	public float TimeRequiredToWin;
-	public float RotationSpeed ;
-
-	private GameObject intruder;
-	public float IntruderEnteredAtTime;
 
 	public float TimeSpentInside;
+    public float ProximityGoal = 1;
 
-	// Use this for initialization
+    Core Core;
+
 	void Start () 
     {
         gameController = FindObjectOfType<GameController>();
+        Core = FindObjectOfType<Core>();
 	}
 
-	void OnTriggerEnter(Collider collider){
-		if (collider.gameObject.GetComponent<CanEndLevel>() != null) {
-			this.intruder = collider.gameObject;
-			IntruderEnteredAtTime =Time.time;
-		}
-	}
+    void FixedUpdate()
+    {
+        if (Vector3.Distance(transform.position, Core.transform.position) < ProximityGoal)
+        {
+            TimeSpentInside += Time.fixedDeltaTime;
+        }
+        else
+        {
+            TimeSpentInside = 0;
+        }
 
-	void OnTriggerLeave(){
-		this.intruder = null;
-		this.TimeSpentInside = 0f;
-		ResetDisplay ();
-	}
-
-	void OnTriggerExit(){
-		this.intruder = null;
-		this.TimeSpentInside = 0f;
-		ResetDisplay ();
-	}
-
-	void OnTriggerStay(Collider collider){
-		if (collider.gameObject != this.intruder) {
-			return;
-		}
-
-		ChangeDisplayWhenInside ();
-
-		this.TimeSpentInside = Time.time - IntruderEnteredAtTime;
-
-		if (this.TimeSpentInside > TimeRequiredToWin)
-			EndLevel ();
-	}
-
-
-	void ChangeDisplayWhenInside(){
-		this.transform.RotateAround (this.transform.position, Vector3.left, RotationSpeed * Time.deltaTime);
-	}
-	void ResetDisplay(){
-		this.transform.localRotation = Quaternion.identity;
-	}
-
-
-	void EndLevel(){
-		Debug.Log ("Level Ended");
-		gameController.EndLevel ();
-	}
-	// Update is called once per frame
-	void Update () {
-
-
-	}
+        if (TimeSpentInside > TimeRequiredToWin)
+        {
+            gameController.EndLevel();
+        }
+    }
 
     public GUISkin Skin;
     public Color TimerColor;
@@ -85,5 +50,15 @@ public class EndsLevel : MonoBehaviour
         GUIHelper.DrawOutline(labelRect, timer, 2);
         GUI.color = TimerColor;
         GUI.Label(labelRect, timer);
+
+        if (TimeSpentInside > 0)
+        {
+            labelRect = new Rect(screenPos.x - 25, Screen.height - screenPos.y - TimerVerticalOffset - 50, 50, 30);
+
+            string winTime = Mathf.FloorToInt(TimeSpentInside * 100).ToString();
+            GUIHelper.DrawOutline(labelRect, winTime, 2);
+            GUI.color = TimerColor;
+            GUI.Label(labelRect, winTime);
+        }
     }
 }
