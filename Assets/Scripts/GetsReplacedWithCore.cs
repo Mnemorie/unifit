@@ -4,13 +4,12 @@ public class GetsReplacedWithCore : MonoBehaviour {
 
     public GameObject ToCreate;
 
-	void Start () {
+	void Awake () {
 		ReplacedWithCore ();
 	}
 
 	void ReplacedWithCore(){
-        GameObject thing = Instantiate(ToCreate, this.transform.position, Quaternion.identity) as GameObject;
-		Camera.main.GetComponent<FollowsObject> ().followThis = thing;
+        Instantiate(ToCreate, this.transform.position, Quaternion.identity);
 		Destroy (this.gameObject);
 	}
 }
