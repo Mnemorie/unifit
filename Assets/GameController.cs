@@ -1,33 +1,60 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameController : MonoBehaviour {
-	public int currentLevel;
+public class GameController : MonoBehaviour
+{
+    public float TimeToLoadNextLevel = 1;
 
-	void Start(){
-		currentLevel = 0;
+	public int currentLevel;
+    private bool LoadingLevel;
+    
+	void Start()
+    {
+        currentLevel = Application.loadedLevel;
 	}
 
-	public void StartGame(){
+    void Update()
+    {
+        if (LoadingLevel)
+        {
+            TimeToLoadNextLevel -= Time.deltaTime;
+            if (TimeToLoadNextLevel <= 0)
+            {
+                Application.LoadLevel(currentLevel);
+                LoadingLevel = false;
+            }
+        }
+    }
+
+	public void StartGame()
+    {
 		LoadNextLevel ();
 	}
 
-	private void LoadNextLevel(){
-		this.currentLevel ++;
-		Application.LoadLevel (Application.loadedLevel +1); 
+	private void LoadNextLevel()
+    {
+		currentLevel++;
+        LoadingLevel = true;
+
+        FindObjectOfType<Fade>().FadeOut();
 	}
 
-	private void RestartLevel(){
-		Application.LoadLevel (Application.loadedLevel);
+	private void RestartLevel()
+    {
+        LoadingLevel = true;
+
+        FindObjectOfType<Fade>().FadeOut();
 	}
 
 
-	public void Lose(){
+	public void Lose()
+    {
 		RestartLevel ();
 
 	}
 
-	public void EndLevel(){
+	public void EndLevel()
+    {
 		LoadNextLevel ();
 
 	}

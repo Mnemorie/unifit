@@ -11,14 +11,23 @@ public class EndsLevel : MonoBehaviour
 
     Core Core;
 
+    bool Ended;
+
 	void Start () 
     {
         gameController = FindObjectOfType<GameController>();
         Core = FindObjectOfType<Core>();
+
+        Ended = false;
 	}
 
     void FixedUpdate()
     {
+        if (Ended)
+        {
+            return;
+        }
+
         if (Vector3.Distance(transform.position, Core.transform.position) < ProximityGoal)
         {
             TimeSpentInside += Time.fixedDeltaTime;
@@ -31,6 +40,7 @@ public class EndsLevel : MonoBehaviour
         if (TimeSpentInside > TimeRequiredToWin)
         {
             gameController.EndLevel();
+            Ended = true;
         }
     }
 

@@ -127,7 +127,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Application.LoadLevel(Application.loadedLevel);
+            FindObjectOfType<GameController>().Lose();
             return;
         }
 
