@@ -9,6 +9,8 @@ public class EndsLevel : MonoBehaviour
 	public float TimeSpentInside;
     public float ProximityGoal = 1;
 
+    public Renderer TimerDisplay;
+
     Core Core;
 
     bool Ended;
@@ -37,10 +39,23 @@ public class EndsLevel : MonoBehaviour
             TimeSpentInside = 0;
         }
 
-        if (TimeSpentInside > TimeRequiredToWin)
+        if (TimeSpentInside > 0)
         {
-            gameController.EndLevel();
-            Ended = true;
+            if (TimeSpentInside > TimeRequiredToWin)
+            {
+                gameController.EndLevel();
+                Ended = true;
+            }
+            else
+            {
+                TimerDisplay.enabled = true;
+                float displayProgress = (1 - (TimeSpentInside / TimeRequiredToWin)) * 0.5f;
+                TimerDisplay.material.SetTextureOffset("_MainTex", new Vector2(0, displayProgress));
+            }
+        }
+        else
+        {
+            TimerDisplay.enabled = false;
         }
     }
 
@@ -69,6 +84,10 @@ public class EndsLevel : MonoBehaviour
             GUIHelper.DrawOutline(labelRect, winTime, 2);
             GUI.color = TimerColor;
             GUI.Label(labelRect, winTime);
+        }
+        else
+        {
+            TimerDisplay.enabled = false;
         }
     }
 }
