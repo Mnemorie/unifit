@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Fade : MonoBehaviour 
 {
     public Renderer Plane;
+    public Canvas Title;
 
+    private Text TitleText;
     Material FadeMaterial;
 
     void Start()
@@ -12,9 +16,34 @@ public class Fade : MonoBehaviour
         FadeMaterial = Plane.GetComponent<Renderer>().material;
         CurrentAlpha = FadedOutAlpha;
         FadeIn();
+
+        TitleText = Instantiate(Title).GetComponentInChildren<Text>();
+        TitleText.text = BeautifyLevelName(Application.loadedLevelName);
     }
 
+    // might not catch all cases we will use
+    string BeautifyLevelName(string levelName)
+    {
+        string outName = "";
+
+        foreach (char c in levelName)
+        {
+            if (Char.IsUpper(c))
+            {
+                outName += " ";
+            }
+            outName += c;
+        }
+
+        return outName;
+    }
+    
     public float FadeTime = 2;
+    public float TitleDisplayTime = 3;
+    public float TitleFadeTime = 1;
+
+    private float CurrentTitleDisplayTime;
+    private bool FadingText;
 
     private float CurrentAlpha = 0;
 
@@ -28,6 +57,9 @@ public class Fade : MonoBehaviour
     {
         FadingIn = true;
         FadingOut = false;
+
+        FadingText = true;
+        CurrentTitleDisplayTime = 0;
     }
 
     public void FadeOut()
@@ -38,6 +70,24 @@ public class Fade : MonoBehaviour
 
     void Update()
     {
+        CurrentTitleDisplayTime += Time.deltaTime;
+        if (FadingText && CurrentTitleDisplayTime > TitleDisplayTime) 
+        {
+            if (CurrentTitleDisplayTime < TitleDisplayTime + TitleFadeTime)
+            {
+                Color textCol = TitleText.color;
+                textCol.a = 1 - ((CurrentTitleDisplayTime - TitleDisplayTime) / TitleFadeTime);
+                TitleText.color = textCol;
+            }
+            else
+            {
+                FadingText = false;
+                Color textCol = TitleText.color;
+                textCol.a = 0;
+                TitleText.color = textCol;
+            }
+        }
+
         if (!(FadingIn || FadingOut))
             return;
 
