@@ -36,14 +36,22 @@ public class GameController : MonoBehaviour
 		currentLevel++;
         LoadingLevel = true;
 
-        FindObjectOfType<Fade>().FadeOut();
+        Fade fade = FindObjectOfType<Fade>();
+        if (fade)
+        {
+            fade.FadeOut();
+        }
 	}
 
 	private void RestartLevel()
     {
         LoadingLevel = true;
 
-        FindObjectOfType<Fade>().FadeOut();
+        Fade fade = FindObjectOfType<Fade>();
+        if (fade)
+        {
+            fade.FadeOut();
+        }
 	}
 
 

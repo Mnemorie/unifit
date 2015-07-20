@@ -9,6 +9,7 @@ public class Fade : MonoBehaviour
     public Canvas Title;
 
     private Text TitleText;
+    private Text LevelNumberText;
     Material FadeMaterial;
 
     void Start()
@@ -17,8 +18,12 @@ public class Fade : MonoBehaviour
         CurrentAlpha = FadedOutAlpha;
         FadeIn();
 
-        TitleText = Instantiate(Title).GetComponentInChildren<Text>();
+        Canvas c = Instantiate(Title);
+
+        TitleText = c.GetComponentsInChildren<Text>()[0];
+        LevelNumberText = c.GetComponentsInChildren<Text>()[1];
         TitleText.text = BeautifyLevelName(Application.loadedLevelName);
+        LevelNumberText.text = "LEVEL " + (Application.loadedLevel - 1);
     }
 
     // might not catch all cases we will use
@@ -78,6 +83,7 @@ public class Fade : MonoBehaviour
                 Color textCol = TitleText.color;
                 textCol.a = 1 - ((CurrentTitleDisplayTime - TitleDisplayTime) / TitleFadeTime);
                 TitleText.color = textCol;
+                LevelNumberText.color = textCol;
             }
             else
             {
@@ -85,6 +91,7 @@ public class Fade : MonoBehaviour
                 Color textCol = TitleText.color;
                 textCol.a = 0;
                 TitleText.color = textCol;
+                LevelNumberText.color = textCol;
             }
         }
 

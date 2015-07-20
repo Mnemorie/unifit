@@ -14,8 +14,17 @@ public class FollowsObject : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        FollowThis = FindObjectOfType<Core>().transform;
-        EndGoal = FindObjectOfType<EndsLevel>().transform;
+        Core c = FindObjectOfType<Core>();
+        if (c)
+        {
+            FollowThis = c.transform;
+        }
+
+        EndsLevel e = FindObjectOfType<EndsLevel>();
+        if (e)
+        {
+            EndGoal = e.transform;
+        }
     }
 	
 	// Update is called once per frame
@@ -23,8 +32,6 @@ public class FollowsObject : MonoBehaviour
     {
 	    if (FollowThis == null)
 	    {
-            FollowThis = FindObjectOfType<Core>().transform;
-            EndGoal = FindObjectOfType<EndsLevel>().transform;
             return;
 	    }
 
