@@ -1,52 +1,15 @@
 fileFormatVersion: 2
-guid: 0f652f0c70983f24fa4bf9b470f62cc0
-timeCreated: 1436714464
+guid: 5c119dc4e81fd8d4c800bbe7c3c57528
+timeCreated: 1436935404
 licenseType: Pro
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Object001
-    100004: Object013
-    100006: Object019
-    100008: Sphere002
-    100010: Block1
-    100012: Block2
-    100014: Block3
-    100016: Block4
     400000: //RootNode
-    400002: Object001
-    400004: Object013
-    400006: Object019
-    400008: Sphere002
-    400010: Block1
-    400012: Block2
-    400014: Block3
-    400016: Block4
-    2300000: Object001
-    2300002: Object013
-    2300004: Object019
-    2300006: Sphere002
-    2300008: Block1
-    2300010: Block2
-    2300012: Block3
-    2300014: Block4
-    3300000: Object001
-    3300002: Object013
-    3300004: Object019
-    3300006: Sphere002
-    3300008: Block1
-    3300010: Block2
-    3300012: Block3
-    3300014: Block4
-    4300000: Object001
-    4300002: Sphere002
-    4300004: Object013
-    4300006: Object019
-    4300008: Block3
-    4300010: Block2
-    4300012: Block1
-    4300014: Block4
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Box002
   materials:
     importMaterials: 0
     materialName: 0
