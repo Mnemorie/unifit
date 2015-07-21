@@ -31,9 +31,9 @@ public class Fade : MonoBehaviour
     {
         string outName = "";
 
-        foreach (char c in levelName)
+        foreach (char c in levelName.Remove(0, levelName.IndexOf('-') + 1))
         {
-            if (Char.IsUpper(c))
+            if (c == '-' || Char.IsUpper(c))
             {
                 outName += " ";
             }
