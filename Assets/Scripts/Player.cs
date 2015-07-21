@@ -1,58 +1,94 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
 using GamepadInput;
 
-class DPad
+public class Controller
 {
-    public GamePad.Index Index;
-    public GamePad.Axis Axis;
+    public int PlayerIndex;
+    private Mapping Mapping;
 
-    bool IsLogitechCrap;
-
-    public DPad(GamePad.Index index, GamePad.Axis axis, bool isLogitechCrappy)
+    public Controller(int playerIndex)
     {
-        Index = index;
-        Axis = axis;
+        PlayerIndex = playerIndex;
 
-        IsLogitechCrap = isLogitechCrappy;
+        
     }
 
-    Vector2 previousInput;
-    Vector2 currentInput;
+    public struct Input
+    {
+        public bool SlideUp;
+        public bool SlideDown;
+        public bool SlideLeft;
+        public bool SlideRight;
+
+        public bool RocketUp;
+        public bool RocketDown;
+        public bool RocketLeft;
+        public bool RocketRight;
+    }
+
+    Input previousInput;
+    Input currentInput;
 
     public void Update()
     {
         previousInput = currentInput;
-        if (!IsLogitechCrap)
-        {
-            currentInput = GamePad.GetAxis(Axis, Index);
-        }
-        else
-        {
-            currentInput.x = -GamePad.GetAxis(GamePad.Axis.RightStick, Index).y;
-            currentInput.y = GamePad.GetAxis(GamePad.Axis.Dpad, Index).x;
-        }
+
+        ReadInput(ref currentInput);
     }
 
-    public bool UpJustPressed()
+    protected void ReadInput(ref Input input)
     {
-        return previousInput.y < 1 && currentInput.y > 0;
+        input.SlideUp = Mapping.SlideUp();
+        input.SlideDown = Mapping.SlideDown();
+        input.SlideLeft = Mapping.SlideLeft();
+        input.SlideRight = Mapping.SlideRight();
+
+        input.RocketUp = Mapping.RocketUp();
+        input.RocketDown = Mapping.RocketDown();
+        input.RocketLeft = Mapping.RocketLeft();
+        input.RocketRight = Mapping.RocketRight();
     }
 
-    public bool DownJustPressed()
+    // there's got to be a way to mash this better :S:S:S:S:SS:
+    public bool SlideUpJustPressed()
     {
-        return previousInput.y > -1 && currentInput.y < 0;
+        return !previousInput.SlideUp && currentInput.SlideUp;
     }
 
-    public bool LeftJustPressed()
+    public bool SlideDownJustPressed()
     {
-        return previousInput.x > -1 && currentInput.x < 0;
+        return !previousInput.SlideDown && currentInput.SlideDown;
     }
 
-    public bool RightJustPressed()
+    public bool SlideLeftJustPressed()
     {
-        return previousInput.x < 1 && currentInput.x > 0;
+        return !previousInput.SlideLeft && currentInput.SlideLeft;
+    }
+
+    public bool SlideRightJustPressed()
+    {
+        return !previousInput.SlideRight && currentInput.SlideRight;
+    }
+    
+    public bool RocketUpJustPressed()
+    {
+        return !previousInput.SlideUp && currentInput.SlideUp;
+    }
+
+    public bool RocketDownJustPressed()
+    {
+        return !previousInput.SlideDown && currentInput.SlideDown;
+    }
+
+    public bool RocketLeftJustPressed()
+    {
+        return !previousInput.SlideLeft && currentInput.SlideLeft;
+    }
+
+    public bool RocketRightJustPressed()
+    {
+        return !previousInput.SlideRight && currentInput.SlideRight;
     }
 }
 
@@ -61,32 +97,14 @@ public class Player : MonoBehaviour
 {
     public bool UseKeyboard = true;
 
-    public KeyCode ControlLeft;
-    public KeyCode ControlRight;
-    public KeyCode ControlUp;
-    public KeyCode ControlDown;
-
     private Node Node;
     private Motor Motor;
     private Rigidbody Body;
     public GameObject Flame;
 
-    public GameObject MoveIndicatorUp;
-    public GameObject MoveIndicatorDown;
-    public GameObject MoveIndicatorLeft;
-    public GameObject MoveIndicatorRight;
+    Controller controller;
 
-    public GameObject PistonIndicatorUp;
-    public GameObject PistonIndicatorDown;
-    public GameObject PistonIndicatorLeft;
-    public GameObject PistonIndicatorRight;
-
-    public GamePad.Index Index;
-    public GamePad.Axis Axis;
-
-    public bool IsLogitech;
-
-    DPad pad;
+    public int PlayerIndex;
 
     float TimeToPiston = 0;
     public float PistonCooldown = 1;
@@ -95,12 +113,17 @@ public class Player : MonoBehaviour
     public Color BigFlameColor;
     public Color SmallFlameColor;
 
-	void Start () 
+    private Controller CreateController()
+    {
+        return null;
+    }
+
+    void Start () 
     {
         Node = GetComponent<Node>();
         Motor = GetComponent<Motor>();
 
-        pad = new DPad(Index, Axis, IsLogitech);
+        controller = CreateController(); 
 
         Body = GetComponentInParent<Rigidbody>();
 
@@ -131,13 +154,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        DPadAxis = GamePad.GetAxis(GamePad.Axis.Dpad, Index);
-        LeftAxis = GamePad.GetAxis(GamePad.Axis.LeftStick, Index);
-        RightAxis = GamePad.GetAxis(GamePad.Axis.RightStick, Index);
-
-        pad.Axis = Axis;
-        pad.Index = Index;
-        pad.Update();
+        controller.Update();
 
         TimeToPiston -= Time.deltaTime;
 
@@ -148,43 +165,43 @@ public class Player : MonoBehaviour
 
         if (TimeToPiston <= 0)
         {
-            if (GamePad.GetButtonDown(PistonUp, Index))
+            if (controller.RocketUpJustPressed())
             {
                 FirePiston(TransformMotionVectorToLocal(Vector3.up));
             }
 
-            if (GamePad.GetButtonDown(PistonDown, Index))
+            if (controller.RocketDownJustPressed())
             {
                 FirePiston(TransformMotionVectorToLocal(Vector3.down));
             }
 
-            if (GamePad.GetButtonDown(PistonLeft, Index))
+            if (controller.RocketLeftJustPressed())
             {
                 FirePiston(TransformMotionVectorToLocal(Vector3.back));
             }
 
-            if (GamePad.GetButtonDown(PistonRight, Index))
+            if (controller.RocketRightJustPressed())
             {
                 FirePiston(TransformMotionVectorToLocal(Vector3.forward));
             }
         }
 
-        if (pad.LeftJustPressed() && !Motor.IsAnybodyMoving)
+        if (controller.SlideLeftJustPressed() && !Motor.IsAnybodyMoving)
         {
             Move(TransformMotionVectorToLocal(Vector3.back));
         }
 
-        if (pad.RightJustPressed() && !Motor.IsAnybodyMoving)
+        if (controller.SlideRightJustPressed() && !Motor.IsAnybodyMoving)
         {
             Move(TransformMotionVectorToLocal(Vector3.forward));
         }
 
-        if (pad.UpJustPressed() && !Motor.IsAnybodyMoving)
+        if (controller.SlideUpJustPressed() && !Motor.IsAnybodyMoving)
         {
             Move(TransformMotionVectorToLocal(Vector3.up));
         }
 
-        if (pad.DownJustPressed() && !Motor.IsAnybodyMoving)
+        if (controller.SlideDownJustPressed() && !Motor.IsAnybodyMoving)
         {
             Move(TransformMotionVectorToLocal(Vector3.down));
         }

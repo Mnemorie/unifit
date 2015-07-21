@@ -254,6 +254,13 @@ namespace GamepadInput
         public float LeftTrigger = 0;
         public float RightTrigger = 0;
 
+        public bool Any()
+        {
+            return A || B || X || Y || Start || Back || Left || Right || Up || Down || 
+                LeftShoulder || RightShoulder || LeftStick || RightStick ||
+                LeftTrigger > 0.1f || RightTrigger > 0.1f ||
+                LeftStickAxis.magnitude > 0 || rightStickAxis.magnitude > 0.1f || dPadAxis.magnitude > 0.1f;
+        }
     }
 
 }
