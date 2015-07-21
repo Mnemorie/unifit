@@ -25,3 +25,6 @@ Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll.meta
 Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll
 Assets/UnityVS/Editor/UnityVS.VersionSpecific.dll.meta
 Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll.meta
+
+#Unifit ignore
+Assets/ShaderForge/*
