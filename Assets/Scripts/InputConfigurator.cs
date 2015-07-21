@@ -2,10 +2,18 @@
 using UnityEngine;
 using System.Collections.Generic;
 using GamepadInput;
+using UnityEngine.UI;
 
 public class InputConfigurator : MonoBehaviour
 {
     public int PlayersToConfigure = 4;
+
+    public Text PlayerLabel;
+    public Image KeyImage;
+    public Text KeyLabel;
+
+    public int CurrentKeyImageIndex;
+    public Sprite[] KeyImages;
 
     enum ConfigurationPhase 
     {
@@ -227,6 +235,8 @@ public class InputConfigurator : MonoBehaviour
                 SaveAndQuit();
             }
         }
+
+        UpdateGUI();
 	}
 
     private bool WaitingForAxisReset;
@@ -384,45 +394,49 @@ public class InputConfigurator : MonoBehaviour
         return KeyCode.None;
     }
 
-    private void OnGUI()
+    private void UpdateGUI()
     {
-        GUILayout.Label("Player " + CurrentPlayer);
+        PlayerLabel.text = "PLAYER " + CurrentPlayer;
 
         if (CurrentPhase == ConfigurationPhase.SlideUp)
         {
-            GUILayout.Label("Press for Slide Upwards (d-pad up)");
+            KeyLabel.text = "PRESS SLIDE UP";
+            KeyImage.sprite = KeyImages[0];
         }
         else if (CurrentPhase == ConfigurationPhase.SlideDown)
         {
-            GUILayout.Label("Press for Slide Downwards (d-pad down)");
+            KeyLabel.text = "PRESS SLIDE DOWN";
+            KeyImage.sprite = KeyImages[1];
         }
         else if (CurrentPhase == ConfigurationPhase.SlideLeft)
         {
-            GUILayout.Label("Press for Slide Left (d-pad left)");
+            KeyLabel.text = "PRESS SLIDE LEFT";
+            KeyImage.sprite = KeyImages[2];
         }
         else if (CurrentPhase == ConfigurationPhase.SlideRight)
         {
-            GUILayout.Label("Press for Slide Right (d-pad right)");
+            KeyLabel.text = "PRESS SLIDE RIGHT";
+            KeyImage.sprite = KeyImages[3];            
         }
         else if (CurrentPhase == ConfigurationPhase.RocketUp)
         {
-            GUILayout.Label("Press for Rocket Up (snes X)");
+            KeyLabel.text = "PRESS FIRE UP";
+            KeyImage.sprite = KeyImages[4]; 
         }
         else if (CurrentPhase == ConfigurationPhase.RocketDown)
         {
-            GUILayout.Label("Press for Rocket Down (snes B)");
+            KeyLabel.text = "PRESS FIRE DOWN";
+            KeyImage.sprite = KeyImages[5]; 
         }
         else if (CurrentPhase == ConfigurationPhase.RocketLeft)
         {
-            GUILayout.Label("Press for Rocket Left (snes Y)");
+            KeyLabel.text = "PRESS FIRE LEFT";
+            KeyImage.sprite = KeyImages[6]; 
         }
         else if (CurrentPhase == ConfigurationPhase.RocketRight)
         {
-            GUILayout.Label("Press for Rocket Right (snes A)");
-        }
-        else if (CurrentPhase == ConfigurationPhase.Finished)
-        {
-            GUILayout.Label("DONE");
+            KeyLabel.text = "PRESS FIRE UP";
+            KeyImage.sprite = KeyImages[7]; 
         }
     }
 }
