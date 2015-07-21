@@ -10,7 +10,6 @@ public class InputConfigurator : MonoBehaviour
     enum ConfigurationPhase 
     {
         WaitingToReadInput,
-        Controller,
         
         SlideUp,
         SlideDown,
@@ -66,7 +65,7 @@ public class InputConfigurator : MonoBehaviour
 	void Start () 
     {
         CurrentPlayer = 1;
-        CurrentPhase = ConfigurationPhase.Controller;
+        CurrentPhase = ConfigurationPhase.SlideUp;
     }
 
     void SaveAndQuit()
@@ -130,7 +129,7 @@ public class InputConfigurator : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (CurrentPhase == ConfigurationPhase.Controller)
+            if (CurrentPhase == ConfigurationPhase.SlideUp)
             {
                 if (CurrentPlayer == 1)
                 {
@@ -143,13 +142,7 @@ public class InputConfigurator : MonoBehaviour
             }
             else
             {
-                CurrentPhase--;
-                if (CurrentControllerType == ControllerType.Gamepad &&
-                    (CurrentPhase == ConfigurationPhase.SlideDown ||
-                    CurrentPhase == ConfigurationPhase.SlideRight))
-                {
-                    CurrentPhase--;
-                }
+                CurrentPhase = ConfigurationPhase.SlideUp;
             }            
         }
 
@@ -173,38 +166,29 @@ public class InputConfigurator : MonoBehaviour
 	            CurrentPhase++;
 	        }
 	    }
-        else if (CurrentPhase == ConfigurationPhase.Controller)
-	    {
-            if (PressedKeyOrButton() != KeyCode.None)
-	        {
-	            CurrentControllerType = ControllerType.Keyboard;
-	            CurrentPhase++;
-	        }
-            else
-	        {
-	            GamePad.Index index = AnyPad();
-	            if (index != GamePad.Index.Any)
-	            {
-	                CurrentControllerType = ControllerType.Gamepad;
-	                GamePadIndex = index;
-                    CurrentPhase++;
-	            }
-	        }
-	    }
         else if (CurrentPhase == ConfigurationPhase.SlideUp)
         {
-            FetchAxisMapping(ref KeyboardSlideUp, ref GamePadVerticalAxis, ref GamePadVerticalAxisDirection);
+            if (PressedKeyOrButton() != KeyCode.None)
+            {
+                CurrentControllerType = ControllerType.Keyboard;
+                FetchAxisMapping(ref KeyboardSlideUp, ref GamePadVerticalAxis, ref GamePadVerticalAxisDirection);
+            }
+            else
+            {
+                GamePad.Index index = AnyPad();
+                if (index != GamePad.Index.Any)
+                {
+                    CurrentControllerType = ControllerType.Gamepad;
+                    GamePadIndex = index;
+                    FetchAxisMapping(ref KeyboardSlideUp, ref GamePadVerticalAxis, ref GamePadVerticalAxisDirection);
+                }
+            }
+
+            
         }
         else if (CurrentPhase == ConfigurationPhase.SlideDown)
         {
-            if (CurrentControllerType == ControllerType.Gamepad) // don't need both directions for dpad
-            {
-                CurrentPhase++;
-            }
-            else
-            {
-                FetchAxisMapping(ref KeyboardSlideDown, ref GamePadHorizontalAxis, ref GamePadHorizontalAxisDirection);
-            }
+            FetchAxisMapping(ref KeyboardSlideDown, ref GamePadHorizontalAxis, ref GamePadHorizontalAxisDirection, true);
         }
         else if (CurrentPhase == ConfigurationPhase.SlideLeft)
         {
@@ -212,14 +196,7 @@ public class InputConfigurator : MonoBehaviour
         }
         else if (CurrentPhase == ConfigurationPhase.SlideRight)
         {
-            if (CurrentControllerType == ControllerType.Gamepad)
-            {
-                CurrentPhase++;
-            }
-            else
-            {
-                FetchAxisMapping(ref KeyboardSlideRight, ref GamePadHorizontalAxis, ref GamePadHorizontalAxisDirection);
-            }
+            FetchAxisMapping(ref KeyboardSlideRight, ref GamePadHorizontalAxis, ref GamePadHorizontalAxisDirection, true);
         }
         else if (CurrentPhase == ConfigurationPhase.RocketUp)
         {
@@ -254,7 +231,7 @@ public class InputConfigurator : MonoBehaviour
 
     private bool WaitingForAxisReset;
 
-    void FetchAxisMapping(ref KeyCode fetchedKey, ref GamePad.Axis fetchedAxis, ref AxisDirection fetchedDirection)
+    void FetchAxisMapping(ref KeyCode fetchedKey, ref GamePad.Axis fetchedAxis, ref AxisDirection fetchedDirection, bool ignored = false)
     {
         if (CurrentControllerType == ControllerType.Keyboard)
         {
@@ -269,22 +246,31 @@ public class InputConfigurator : MonoBehaviour
         {
             if (GamePad.GetAxis(GamePad.Axis.Dpad, GamePadIndex).magnitude > 0.3f)
             {
-                fetchedAxis = GamePad.Axis.Dpad;
-                fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.Dpad, GamePadIndex));
+                if (!ignored)
+                {
+                    fetchedAxis = GamePad.Axis.Dpad;
+                    fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.Dpad, GamePadIndex));
+                }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
             }
             else if (GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex).magnitude > 0.3f)
             {
-                fetchedAxis = GamePad.Axis.LeftStick;
-                fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex));
+                if (!ignored)
+                {
+                    fetchedAxis = GamePad.Axis.LeftStick;
+                    fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex));
+                }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
             }
             else if (GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex).magnitude > 0.3f)
             {
-                fetchedAxis = GamePad.Axis.RightStick;
-                fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex));
+                if (!ignored)
+                {
+                    fetchedAxis = GamePad.Axis.RightStick;
+                    fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex));
+                }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
             }
@@ -402,15 +388,11 @@ public class InputConfigurator : MonoBehaviour
     {
         GUILayout.Label("Player " + CurrentPlayer);
 
-        if (CurrentPhase == ConfigurationPhase.Controller)
-        {
-            GUILayout.Label("Press a button on the gamepad or keyboard");
-        }
-        else if (CurrentPhase == ConfigurationPhase.SlideUp)
+        if (CurrentPhase == ConfigurationPhase.SlideUp)
         {
             GUILayout.Label("Press for Slide Upwards (d-pad up)");
         }
-        else if (CurrentPhase == ConfigurationPhase.SlideDown && CurrentControllerType == ControllerType.Keyboard)
+        else if (CurrentPhase == ConfigurationPhase.SlideDown)
         {
             GUILayout.Label("Press for Slide Downwards (d-pad down)");
         }
@@ -418,7 +400,7 @@ public class InputConfigurator : MonoBehaviour
         {
             GUILayout.Label("Press for Slide Left (d-pad left)");
         }
-        else if (CurrentPhase == ConfigurationPhase.SlideRight && CurrentControllerType == ControllerType.Keyboard)
+        else if (CurrentPhase == ConfigurationPhase.SlideRight)
         {
             GUILayout.Label("Press for Slide Right (d-pad right)");
         }
