@@ -54,14 +54,14 @@ public class KeyboardMapping : Mapping
 
     public KeyboardMapping(int player)
     {
-        SlideUpKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "SlideUpKey"));
-        SlideDownKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "SlideDownKey"));
-        SlideLeftKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "SlideLeftKey"));
-        SlideRightKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "SlideRightKey"));
+        SlideUpKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardSlideUp"));
+        SlideDownKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardSlideDown"));
+        SlideLeftKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardSlideLeft"));
+        SlideRightKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardSlideRight"));
 
-        RocketUpKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "RocketUpKey"));
-        RocketDownKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "RocketDownKey"));
-        RocketLeftKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "RocketLeftKey"));
-        RocketRightKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "RocketRightKey"));
+        RocketUpKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardRocketUp"));
+        RocketDownKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardRocketDown"));
+        RocketLeftKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardRocketLeft"));
+        RocketRightKey = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("p" + player + "KeyboardRocketRight"));
     }
 }

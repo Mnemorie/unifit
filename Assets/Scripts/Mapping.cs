@@ -12,6 +12,13 @@ public abstract class Mapping
     public abstract bool RocketLeft();
     public abstract bool RocketRight();
 
+    public bool Any()
+    {
+        return SlideUp() || SlideDown() || SlideLeft() || SlideRight() ||
+               RocketUp() || RocketDown() || RocketLeft() || RocketRight();
+
+    }
+
     static public Mapping Load(int player) // 1-4
     {
         string controllerType = PlayerPrefs.GetString("p" + player + "ControllerType");

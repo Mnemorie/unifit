@@ -23,7 +23,7 @@ public class Fade : MonoBehaviour
         TitleText = c.GetComponentsInChildren<Text>()[0];
         LevelNumberText = c.GetComponentsInChildren<Text>()[1];
         TitleText.text = BeautifyLevelName(Application.loadedLevelName);
-        LevelNumberText.text = "LEVEL " + (Application.loadedLevel - 1);
+        LevelNumberText.text = "LEVEL " + (Application.loadedLevel - 2);
     }
 
     // might not catch all cases we will use

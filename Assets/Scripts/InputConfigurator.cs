@@ -80,7 +80,7 @@ public class InputConfigurator : MonoBehaviour
             }
         }
 
-        Application.LoadLevel(1);
+        Application.LoadLevel(2);
     }
 
     void QuitWithoutSaving()
@@ -144,6 +144,12 @@ public class InputConfigurator : MonoBehaviour
             else
             {
                 CurrentPhase--;
+                if (CurrentControllerType == ControllerType.Gamepad &&
+                    (CurrentPhase == ConfigurationPhase.SlideDown ||
+                    CurrentPhase == ConfigurationPhase.SlideRight))
+                {
+                    CurrentPhase--;
+                }
             }            
         }
 
@@ -268,14 +274,14 @@ public class InputConfigurator : MonoBehaviour
                 CurrentPhase++;
                 WaitingForAxisReset = true;
             }
-            else if (GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex).magnitude > 0.1f)
+            else if (GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex).magnitude > 0.3f)
             {
                 fetchedAxis = GamePad.Axis.LeftStick;
                 fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex));
                 CurrentPhase++;
                 WaitingForAxisReset = true;
             }
-            else if (GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex).magnitude > 0.1f)
+            else if (GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex).magnitude > 0.3f)
             {
                 fetchedAxis = GamePad.Axis.RightStick;
                 fetchedDirection = ToDirection(GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex));
@@ -335,11 +341,11 @@ public class InputConfigurator : MonoBehaviour
     {
         if (axis.x > 0.1f)
         {
-            return AxisDirection.X;
+            return AxisDirection.X_Negative;
         }
         else if (axis.x < -0.1f)
         {
-            return AxisDirection.X_Negative;
+            return AxisDirection.X;
         }
         else if (axis.y > 0.1f)
         {
@@ -404,7 +410,7 @@ public class InputConfigurator : MonoBehaviour
         {
             GUILayout.Label("Press for Slide Upwards (d-pad up)");
         }
-        else if (CurrentPhase == ConfigurationPhase.SlideDown)
+        else if (CurrentPhase == ConfigurationPhase.SlideDown && CurrentControllerType == ControllerType.Keyboard)
         {
             GUILayout.Label("Press for Slide Downwards (d-pad down)");
         }
@@ -412,7 +418,7 @@ public class InputConfigurator : MonoBehaviour
         {
             GUILayout.Label("Press for Slide Left (d-pad left)");
         }
-        else if (CurrentPhase == ConfigurationPhase.SlideRight)
+        else if (CurrentPhase == ConfigurationPhase.SlideRight && CurrentControllerType == ControllerType.Keyboard)
         {
             GUILayout.Label("Press for Slide Right (d-pad right)");
         }

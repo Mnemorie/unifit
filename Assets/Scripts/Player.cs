@@ -4,14 +4,11 @@ using GamepadInput;
 
 public class Controller
 {
-    public int PlayerIndex;
     private Mapping Mapping;
 
     public Controller(int playerIndex)
     {
-        PlayerIndex = playerIndex;
-
-        
+        Mapping = Mapping.Load(playerIndex);
     }
 
     public struct Input
@@ -73,22 +70,22 @@ public class Controller
     
     public bool RocketUpJustPressed()
     {
-        return !previousInput.SlideUp && currentInput.SlideUp;
+        return !previousInput.RocketUp && currentInput.RocketUp;
     }
 
     public bool RocketDownJustPressed()
     {
-        return !previousInput.SlideDown && currentInput.SlideDown;
+        return !previousInput.RocketDown && currentInput.RocketDown;
     }
 
     public bool RocketLeftJustPressed()
     {
-        return !previousInput.SlideLeft && currentInput.SlideLeft;
+        return !previousInput.RocketLeft && currentInput.RocketLeft;
     }
 
     public bool RocketRightJustPressed()
     {
-        return !previousInput.SlideRight && currentInput.SlideRight;
+        return !previousInput.RocketRight && currentInput.RocketRight;
     }
 }
 
@@ -115,7 +112,7 @@ public class Player : MonoBehaviour
 
     private Controller CreateController()
     {
-        return null;
+        return new Controller(PlayerIndex);
     }
 
     void Start () 
