@@ -15,6 +15,9 @@ public class InputConfigurator : MonoBehaviour
     public int CurrentKeyImageIndex;
     public Sprite[] KeyImages;
 
+    public Text HintLabel;
+    public Text LocationLabel;
+
     enum ConfigurationPhase 
     {
         WaitingToReadInput,
@@ -398,7 +401,7 @@ public class InputConfigurator : MonoBehaviour
 
     private void UpdateGUI()
     {
-        PlayerLabel.text = "PLAYER " + CurrentPlayer;
+        LocationLabel.text = "P" + CurrentPlayer + " controls";
 
         if (CurrentPhase == ConfigurationPhase.SlideUp)
         {
@@ -439,6 +442,19 @@ public class InputConfigurator : MonoBehaviour
         {
             KeyLabel.text = "PRESS FIRE UP";
             KeyImage.sprite = KeyImages[7]; 
+        }
+
+        if (CurrentPlayer == 1 && CurrentPhase == ConfigurationPhase.SlideUp)
+        {
+            HintLabel.text = "Configure your controllers";
+        }
+        else if (CurrentPhase != ConfigurationPhase.SlideUp)
+        {
+            HintLabel.text = "Press ESC to start over";
+        }
+        else
+        {
+            HintLabel.text = "Press ESC to configure player " + (CurrentPlayer-1) + " again";
         }
     }
 }
