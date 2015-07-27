@@ -38,6 +38,9 @@ public class GameController : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Escape) && currentLevel == 1)
             {
                 Application.Quit();
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
             }
 
             TimeToLoadNextLevel -= Time.deltaTime;
