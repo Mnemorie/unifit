@@ -8,16 +8,38 @@ public class GameController : MonoBehaviour
 
 	public int currentLevel;
     private bool LoadingLevel;
-    
+
+    HUD hud;
+
 	void Start()
     {
+        hud = FindObjectOfType<HUD>();
+
         currentLevel = Application.loadedLevel;
+
+        if (IsLevelUnlocked(currentLevel + 1))
+        {
+            hud.ShowHint("Press SPACEBAR to skip to next level");
+        }
+        else
+        {
+            hud.ShowHint("Press ESC to start over");
+        }
 	}
 
     void Update()
     {
         if (LoadingLevel)
         {
+            if (Input.GetKeyDown(KeyCode.Escape) && currentLevel > 1)
+            {
+                --currentLevel;
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape) && currentLevel == 1)
+            {
+                Application.Quit();
+            }
+
             TimeToLoadNextLevel -= Time.deltaTime;
             if (TimeToLoadNextLevel <= 0)
             {
@@ -44,7 +66,7 @@ public class GameController : MonoBehaviour
         }
 	}
 
-	private void RestartLevel()
+	public void RestartLevel()
     {
         LoadingLevel = true;
 
@@ -53,11 +75,6 @@ public class GameController : MonoBehaviour
         {
             fade.FadeOut();
         }
-	}
-
-	public void Lose()
-    {
-		RestartLevel ();
 	}
 
 	public void WinLevel()
@@ -81,7 +98,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            FindObjectOfType<HUD>().ShowHint("Next level is locked");
+            hud.ShowHint("Next level is locked");
+            hud.ShowScore();
         }
     }
 

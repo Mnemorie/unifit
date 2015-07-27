@@ -17,12 +17,18 @@ public class HUD : MonoBehaviour
 
     LevelTemplate level;
 
+    public float ScoreBoardDisplayTime = 4;
+
+    float InitialScoreBoardDisplayTime;
+
     void Start()
     {
         Location.text = BeautifyLevelName(Application.loadedLevelName);
         level = FindObjectOfType<LevelTemplate>();
 
         PopulateScoreBoard();
+
+        InitialScoreBoardDisplayTime = ScoreBoardDisplayTime;
     }
 
 
@@ -48,6 +54,16 @@ public class HUD : MonoBehaviour
                 Hint.text = "";
                 showingHint = false;
             }
+        }
+
+        ScoreBoardDisplayTime -= Time.deltaTime;
+        if (ScoreBoardDisplayTime < 0 && ScoreBoard.gameObject.activeSelf)
+        {
+            ScoreBoard.gameObject.SetActive(false);
+        }
+        else if (ScoreBoardDisplayTime > 0 && !ScoreBoard.gameObject.activeSelf)
+        {
+            ScoreBoard.gameObject.SetActive(true);
         }
     }
 
@@ -99,7 +115,10 @@ public class HUD : MonoBehaviour
         }
     }
 
-
+    public void ShowScore()
+    {
+        ScoreBoardDisplayTime = InitialScoreBoardDisplayTime;
+    }
 
     public void ShowHint(string p)
     {

@@ -22,6 +22,10 @@ public class Core : MonoBehaviour
         {
             FindObjectOfType<GameController>().SkipLevel();
         }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            FindObjectOfType<GameController>().RestartLevel();
+        }
     }
 
     void UpdateTricks()
