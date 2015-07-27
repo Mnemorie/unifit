@@ -98,7 +98,7 @@ public class GameController : MonoBehaviour
 
     public void SkipLevel()
     {
-        if (IsLevelUnlocked(Application.loadedLevel + 1))
+        if (IsLevelUnlocked(Application.loadedLevel))
         {
             LoadNextLevel();
         }
