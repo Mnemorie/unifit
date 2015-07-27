@@ -138,6 +138,13 @@ public class InputConfigurator : MonoBehaviour
 
 	void Update () 
     {
+        if (Input.GetKeyDown(KeyCode.F12) && Input.GetKey(KeyCode.LeftShift))
+        {
+            Debug.Log("flusing save data");
+            PlayerPrefs.DeleteAll();
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (CurrentPhase == ConfigurationPhase.SlideUp)
@@ -439,7 +446,7 @@ public class InputConfigurator : MonoBehaviour
         }
         else if (CurrentPhase == ConfigurationPhase.RocketRight)
         {
-            KeyLabel.text = "PRESS FIRE UP";
+            KeyLabel.text = "PRESS FIRE RIGHT";
             KeyImage.sprite = KeyImages[7]; 
         }
 

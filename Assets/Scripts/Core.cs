@@ -62,12 +62,12 @@ public class Core : MonoBehaviour
     void ValidateTrick()
     {
         float absRotation = Mathf.Abs(currentRotation) + 10;
-        if (absRotation < 360)
+        if (absRotation < 180)
         {
             return;
         }
 
-        ShowTrickText(Mathf.FloorToInt(absRotation / 360) * 360 + "° Flip");
+        ShowTrickText(Mathf.FloorToInt(absRotation / 180) * 180 + "° Flip");
     }
 
 
