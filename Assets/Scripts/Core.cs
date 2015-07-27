@@ -7,29 +7,27 @@ public class Core : MonoBehaviour
 {
     Vector3 lastUp;
 
-    Text TrickText;
+    HUD HUD;
 
     void Start()
     {
-        TrickText = FindObjectOfType<HUD>().Hint;
-        TrickText.text = "";
+        HUD = FindObjectOfType<HUD>();
     }
 
     void Update()
     {
         UpdateTricks();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            FindObjectOfType<GameController>().SkipLevel();
+        }
     }
 
     void UpdateTricks()
     {
         currentRotation += AngleSigned(lastUp, transform.up, Vector3.right);
         lastUp = transform.up;
-
-        currentTrickTextDisplayTime -= Time.deltaTime;
-        if (currentTrickTextDisplayTime < 0)
-        {
-            TrickText.text = "";
-        }
     }
 
     public float currentRotation;
@@ -68,13 +66,10 @@ public class Core : MonoBehaviour
         ShowTrickText(Mathf.FloorToInt(absRotation / 360) * 360 + "° Flip");
     }
 
-    public float TrickTextDisplayTime = 2;
-    float currentTrickTextDisplayTime;
 
     void ShowTrickText(string trick)
     {
-        TrickText.text = trick;
-        currentTrickTextDisplayTime = TrickTextDisplayTime;
+        HUD.ShowHint(trick);
     }
 
     public static float AngleSigned(Vector3 v1, Vector3 v2, Vector3 n)

@@ -63,11 +63,11 @@ public class GameController : MonoBehaviour
 	public void WinLevel()
     {
         string scoreKey = Application.loadedLevel + "-score";
-        string currentScore = FindObjectOfType<LevelTemplate>().GetCurrentScore();
+        int currentScore = Mathf.FloorToInt(Time.timeSinceLevelLoad);
         if (!PlayerPrefs.HasKey(scoreKey) ||
-            char.Parse(PlayerPrefs.GetString(scoreKey)) > char.Parse(currentScore))
+            PlayerPrefs.GetInt(scoreKey) > currentScore)
         {
-            PlayerPrefs.SetString(Application.loadedLevel + "-score", "" + currentScore);
+            PlayerPrefs.SetInt(Application.loadedLevel + "-score", currentScore);
         }
         
 		LoadNextLevel ();
@@ -75,15 +75,29 @@ public class GameController : MonoBehaviour
 
     public void SkipLevel()
     {
-        if (IsLevelUnlocked(Application.loadedLevel+1))
+        if (IsLevelUnlocked(Application.loadedLevel + 1))
         {
             LoadNextLevel();
+        }
+        else
+        {
+            FindObjectOfType<HUD>().ShowHint("Next level is locked");
         }
     }
 
     public bool IsLevelUnlocked(int level)
     {
         return PlayerPrefs.HasKey(level + "-score");
+    }
+
+    public int GetCompletedLevelScore(int level)
+    {
+        if (!PlayerPrefs.HasKey(level + "-score"))
+        {
+            return -1;
+        }
+
+        return PlayerPrefs.GetInt(level + "-score");
     }
 }
  

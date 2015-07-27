@@ -145,12 +145,6 @@ public class Player : MonoBehaviour
 
     void Update () 
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            FindObjectOfType<GameController>().Lose();
-            return;
-        }
-
         controller.Update();
 
         TimeToPiston -= Time.deltaTime;

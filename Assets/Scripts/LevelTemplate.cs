@@ -8,22 +8,27 @@ public class LevelTemplate : MonoBehaviour
         float time = Time.timeSinceLevelLoad;
         LevelTier tiers = FindObjectOfType<LevelTiers>().Tiers[Application.loadedLevel - 1];
 
-        if (time < tiers.TierA)
+        return GetScoreForTime(tiers, time);
+    }
+
+    public string GetScoreForTime(LevelTier tier, float time)
+    {
+        if (time < tier.TierA)
         {
             return "A";
         }
 
-        if (time < tiers.TierB)
+        if (time < tier.TierB)
         {
             return "B";
         }
 
-        if (time < tiers.TierC)
+        if (time < tier.TierC)
         {
             return "C";
         }
 
-        if (time < tiers.TierD)
+        if (time < tier.TierD)
         {
             return "D";
         }
@@ -31,10 +36,9 @@ public class LevelTemplate : MonoBehaviour
         return "E";
     }
 
-    public Color GetCurrentScoreColor()
+    public Color GetScoreColor(string score)
     {
-        string currentScore = GetCurrentScore();
-        switch (currentScore)
+        switch (score)
         {
             case "A":
                 return Color.green;
