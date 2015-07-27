@@ -86,7 +86,6 @@ public class InputConfigurator : MonoBehaviour
             foreach (var setting in player.Value)
             {
                 PlayerPrefs.SetString("p"+player.Key+setting.Key, setting.Value);
-                Debug.Log("saving p" + player.Key + setting.Key + " : " + setting.Value);
             }
         }
 

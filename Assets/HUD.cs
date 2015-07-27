@@ -109,7 +109,7 @@ public class HUD : MonoBehaviour
                 instance = Instantiate(LockedTemplate);
             }
 
-            instance.rectTransform.parent = ScoreBoard;
+            instance.rectTransform.SetParent(ScoreBoard);
             instance.rectTransform.localPosition = new Vector3(0, (-(i - (tiers.Length/2)) * ScoreBoardYPadding), 0);
             instance.text = tiers[i].Title;
         }

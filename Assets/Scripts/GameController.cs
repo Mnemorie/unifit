@@ -17,13 +17,16 @@ public class GameController : MonoBehaviour
 
         currentLevel = Application.loadedLevel;
 
-        if (IsLevelUnlocked(currentLevel + 1))
+        if (hud)
         {
-            hud.ShowHint("Press SPACEBAR to skip to next level");
-        }
-        else
-        {
-            hud.ShowHint("Press ESC to start over");
+            if (IsLevelUnlocked(currentLevel + 1))
+            {
+                hud.ShowHint("Press SPACEBAR to skip to next level");
+            }
+            else
+            {
+                hud.ShowHint("Press ESC to start over");
+            }
         }
 	}
 
