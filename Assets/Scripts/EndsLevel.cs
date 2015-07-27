@@ -43,7 +43,7 @@ public class EndsLevel : MonoBehaviour
         {
             if (TimeSpentInside > TimeRequiredToWin)
             {
-                gameController.EndLevel();
+                gameController.WinLevel();
                 Ended = true;
             }
             else

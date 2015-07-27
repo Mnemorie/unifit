@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class GameController : MonoBehaviour
@@ -54,16 +55,35 @@ public class GameController : MonoBehaviour
         }
 	}
 
-
 	public void Lose()
     {
 		RestartLevel ();
-
 	}
 
-	public void EndLevel()
+	public void WinLevel()
     {
+        string scoreKey = Application.loadedLevel + "-score";
+        string currentScore = FindObjectOfType<LevelTemplate>().GetCurrentScore();
+        if (!PlayerPrefs.HasKey(scoreKey) ||
+            char.Parse(PlayerPrefs.GetString(scoreKey)) > char.Parse(currentScore))
+        {
+            PlayerPrefs.SetString(Application.loadedLevel + "-score", "" + currentScore);
+        }
+        
 		LoadNextLevel ();
-
 	}
+
+    public void SkipLevel()
+    {
+        if (IsLevelUnlocked(Application.loadedLevel+1))
+        {
+            LoadNextLevel();
+        }
+    }
+
+    public bool IsLevelUnlocked(int level)
+    {
+        return PlayerPrefs.HasKey(level + "-score");
+    }
 }
+ 

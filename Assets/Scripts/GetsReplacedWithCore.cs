@@ -4,11 +4,13 @@ public class GetsReplacedWithCore : MonoBehaviour {
 
     public GameObject ToCreate;
 
-	void Awake () {
+	void Awake () 
+    {
 		ReplacedWithCore ();
 	}
 
-	void ReplacedWithCore(){
+	void ReplacedWithCore()
+    {
         Instantiate(ToCreate, this.transform.position, Quaternion.identity);
 		Destroy (this.gameObject);
 	}

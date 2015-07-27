@@ -87,7 +87,8 @@ public class InputConfigurator : MonoBehaviour
             }
         }
 
-        Application.LoadLevel(2);
+        PlayerPrefs.Save();
+        Application.LoadLevel(1);
     }
 
     void QuitWithoutSaving()
@@ -146,6 +147,7 @@ public class InputConfigurator : MonoBehaviour
                 else
                 {
                     CurrentPlayer--;
+                    GetComponent<GameJoinControl>().PlayersReady[CurrentPlayer - 1] = false;
                 }
             }
             else
@@ -191,8 +193,6 @@ public class InputConfigurator : MonoBehaviour
                     FetchAxisMapping(ref KeyboardSlideUp, ref GamePadVerticalAxis, ref GamePadVerticalAxisDirection);
                 }
             }
-
-            
         }
         else if (CurrentPhase == ConfigurationPhase.SlideDown)
         {
@@ -225,6 +225,8 @@ public class InputConfigurator : MonoBehaviour
         else if (CurrentPhase == ConfigurationPhase.Finished)
         {
             StoreForSaving();
+            GetComponent<GameJoinControl>().PlayersReady[CurrentPlayer - 1] = true;
+
             if (CurrentPlayer < PlayersToConfigure)
             {
                 CurrentPlayer++;
