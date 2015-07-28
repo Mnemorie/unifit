@@ -169,8 +169,8 @@ public class InputConfigurator : MonoBehaviour
                 }
                 else
                 {
-                    PlayerConfigurators[CurrentPlayer - 1].Unready();
                     CurrentPlayer--;
+                    PlayerConfigurators[CurrentPlayer - 1].Unready();
                     GetComponent<GameJoinControl>().PlayersReady[CurrentPlayer - 1] = false;
                 }
             }
