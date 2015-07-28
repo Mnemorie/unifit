@@ -1,12 +1,13 @@
 fileFormatVersion: 2
 guid: 7993de36c48da414e97601bb505fbaf6
-timeCreated: 1438042948
+timeCreated: 1438045921
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
     21300000: DPad
     21300002: FaceButton
     21300004: Controller
+    21300006: Bracket
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -79,6 +80,16 @@ TextureImporter:
         y: 128
         width: 600
         height: 256
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Bracket
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
