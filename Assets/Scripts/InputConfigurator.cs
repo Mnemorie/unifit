@@ -18,6 +18,8 @@ public class InputConfigurator : MonoBehaviour
     public Text HintLabel;
     public Text LocationLabel;
 
+    public PlayerConfigurator[] PlayerConfigurators;
+
     enum ConfigurationPhase 
     {
         WaitingToReadInput,
@@ -72,6 +74,8 @@ public class InputConfigurator : MonoBehaviour
         Y,
         Y_Negative
     }
+
+    public Animator Animator;
 
 	void Start () 
     {
@@ -138,6 +142,16 @@ public class InputConfigurator : MonoBehaviour
 
 	void Update () 
     {
+        AnimatorStateInfo state = Animator.GetCurrentAnimatorStateInfo(0);
+
+        if (!state.IsName("P1Config") &&
+            !state.IsName("P2Config") &&
+            !state.IsName("P3Config") &&
+            !state.IsName("P4Config"))
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.F12) && Input.GetKey(KeyCode.LeftShift))
         {
             Debug.Log("flusing save data");
@@ -155,6 +169,7 @@ public class InputConfigurator : MonoBehaviour
                 }
                 else
                 {
+                    PlayerConfigurators[CurrentPlayer - 1].Unready();
                     CurrentPlayer--;
                     GetComponent<GameJoinControl>().PlayersReady[CurrentPlayer - 1] = false;
                 }
@@ -162,7 +177,8 @@ public class InputConfigurator : MonoBehaviour
             else
             {
                 CurrentPhase = ConfigurationPhase.SlideUp;
-            }            
+            }
+            return;
         }
 
 	    if (WaitingForAxisReset)
@@ -234,6 +250,7 @@ public class InputConfigurator : MonoBehaviour
         else if (CurrentPhase == ConfigurationPhase.Finished)
         {
             StoreForSaving();
+            PlayerConfigurators[CurrentPlayer - 1].Ready();
             GetComponent<GameJoinControl>().PlayersReady[CurrentPlayer - 1] = true;
 
             if (CurrentPlayer < PlayersToConfigure)
@@ -411,43 +428,44 @@ public class InputConfigurator : MonoBehaviour
 
         if (CurrentPhase == ConfigurationPhase.SlideUp)
         {
-            KeyLabel.text = "PRESS SLIDE UP";
-            KeyImage.sprite = KeyImages[0];
+            PlayerConfigurators[CurrentPlayer - 1].ShowSlideUp();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Move Up";
+            
         }
         else if (CurrentPhase == ConfigurationPhase.SlideDown)
         {
-            KeyLabel.text = "PRESS SLIDE DOWN";
-            KeyImage.sprite = KeyImages[1];
+            PlayerConfigurators[CurrentPlayer - 1].ShowSlideDown();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Move Down";
         }
         else if (CurrentPhase == ConfigurationPhase.SlideLeft)
         {
-            KeyLabel.text = "PRESS SLIDE LEFT";
-            KeyImage.sprite = KeyImages[2];
+            PlayerConfigurators[CurrentPlayer - 1].ShowSlideLeft();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Move Left";
         }
         else if (CurrentPhase == ConfigurationPhase.SlideRight)
         {
-            KeyLabel.text = "PRESS SLIDE RIGHT";
-            KeyImage.sprite = KeyImages[3];            
+            PlayerConfigurators[CurrentPlayer - 1].ShowSlideRight();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Move Right";
         }
         else if (CurrentPhase == ConfigurationPhase.RocketUp)
         {
-            KeyLabel.text = "PRESS FIRE UP";
-            KeyImage.sprite = KeyImages[4]; 
+            PlayerConfigurators[CurrentPlayer - 1].ShowRocketUp();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Action Up";
         }
         else if (CurrentPhase == ConfigurationPhase.RocketDown)
         {
-            KeyLabel.text = "PRESS FIRE DOWN";
-            KeyImage.sprite = KeyImages[5]; 
+            PlayerConfigurators[CurrentPlayer - 1].ShowRocketDown();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Action Down";
         }
         else if (CurrentPhase == ConfigurationPhase.RocketLeft)
         {
-            KeyLabel.text = "PRESS FIRE LEFT";
-            KeyImage.sprite = KeyImages[6]; 
+            PlayerConfigurators[CurrentPlayer - 1].ShowRocketLeft();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Action Left";
         }
         else if (CurrentPhase == ConfigurationPhase.RocketRight)
         {
-            KeyLabel.text = "PRESS FIRE RIGHT";
-            KeyImage.sprite = KeyImages[7]; 
+            PlayerConfigurators[CurrentPlayer - 1].ShowRocketRight();
+            PlayerConfigurators[CurrentPlayer - 1].Label.text = "Action Right";
         }
 
         if (CurrentPlayer == 1 && CurrentPhase == ConfigurationPhase.SlideUp)
