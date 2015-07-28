@@ -54,15 +54,15 @@ public class HUD : MonoBehaviour
             }
         }
 
-        //ScoreBoardDisplayTime -= Time.deltaTime;
-        //if (ScoreBoardDisplayTime < 0 && ScoreBoard.gameObject.activeSelf)
-        //{
-        //    ScoreBoard.gameObject.SetActive(false);
-        //}
-        //else if (ScoreBoardDisplayTime > 0 && !ScoreBoard.gameObject.activeSelf)
-        //{
-        //    ScoreBoard.gameObject.SetActive(true);
-        //}
+        ScoreBoardDisplayTime -= Time.deltaTime;
+        if (ScoreBoardDisplayTime < 0 && ScoreBoard.gameObject.activeSelf)
+        {
+            ScoreBoard.gameObject.SetActive(false);
+        }
+        else if (ScoreBoardDisplayTime > 0 && !ScoreBoard.gameObject.activeSelf)
+        {
+            ScoreBoard.gameObject.SetActive(true);
+        }
     }
 
     string BeautifyLevelName(string levelName)
