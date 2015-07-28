@@ -11,9 +11,7 @@ public class HUD : MonoBehaviour
     public Text Hint;
 
     public RectTransform ScoreBoard;
-    public Text CompletedTemplate;
-    public Text CurrentTemplate;
-    public Text LockedTemplate;
+    public ScoreboardLine LineTemplate;
 
     LevelTemplate level;
 
@@ -56,15 +54,15 @@ public class HUD : MonoBehaviour
             }
         }
 
-        ScoreBoardDisplayTime -= Time.deltaTime;
-        if (ScoreBoardDisplayTime < 0 && ScoreBoard.gameObject.activeSelf)
-        {
-            ScoreBoard.gameObject.SetActive(false);
-        }
-        else if (ScoreBoardDisplayTime > 0 && !ScoreBoard.gameObject.activeSelf)
-        {
-            ScoreBoard.gameObject.SetActive(true);
-        }
+        //ScoreBoardDisplayTime -= Time.deltaTime;
+        //if (ScoreBoardDisplayTime < 0 && ScoreBoard.gameObject.activeSelf)
+        //{
+        //    ScoreBoard.gameObject.SetActive(false);
+        //}
+        //else if (ScoreBoardDisplayTime > 0 && !ScoreBoard.gameObject.activeSelf)
+        //{
+        //    ScoreBoard.gameObject.SetActive(true);
+        //}
     }
 
     string BeautifyLevelName(string levelName)
@@ -92,26 +90,8 @@ public class HUD : MonoBehaviour
 
         for (int i = 0; i < tiers.Length; ++i)
         {
-            Text instance;
-            if (i + 1 == Application.loadedLevel)
-            {
-                instance = Instantiate(CurrentTemplate);
-            }
-            else if (game.IsLevelUnlocked(i+1))
-            {
-                instance = Instantiate(CompletedTemplate);
-
-                int levelTime = game.GetCompletedLevelScore(i + 1);
-                instance.rectTransform.GetChild(2).GetComponent<Text>().text = level.GetScoreForTime(tiers[i], levelTime);
-            }
-            else
-            {
-                instance = Instantiate(LockedTemplate);
-            }
-
-            instance.rectTransform.SetParent(ScoreBoard);
-            instance.rectTransform.localPosition = new Vector3(0, (-(i - (tiers.Length/2)) * ScoreBoardYPadding), 0);
-            instance.text = tiers[i].Title;
+            ScoreboardLine instance = Instantiate(LineTemplate);
+            instance.ShowLevel(i+1, ScoreBoard, tiers[i]);
         }
     }
 
