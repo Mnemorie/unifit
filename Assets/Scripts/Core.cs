@@ -67,7 +67,14 @@ public class Core : MonoBehaviour
             return;
         }
 
-        ShowTrickText(Mathf.FloorToInt(absRotation / 180) * 180 + "° Flip");
+        if (currentRotation > 0)
+        {
+            ShowTrickText(Mathf.FloorToInt(absRotation / 180) * 180 + "° Front Flip");
+        }
+        else
+        {
+            ShowTrickText(Mathf.FloorToInt(absRotation / 180) * 180 + "° Back Flip");
+        }
     }
 
 
