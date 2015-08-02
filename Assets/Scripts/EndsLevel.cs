@@ -32,10 +32,20 @@ public class EndsLevel : MonoBehaviour
 
         if (Vector3.Distance(transform.position, Core.transform.position) < ProximityGoal)
         {
+            if (TimeSpentInside <= 0)
+            {
+                Core.OnEnterZone();
+            }
+
             TimeSpentInside += Time.fixedDeltaTime;
         }
         else
         {
+            if (TimeSpentInside > 0)
+            {
+                Core.OnLeaveZone();
+            }
+
             TimeSpentInside = 0;
         }
 
@@ -43,6 +53,7 @@ public class EndsLevel : MonoBehaviour
         {
             if (TimeSpentInside > TimeRequiredToWin)
             {
+                Core.OnWin();
                 gameController.WinLevel();
                 Ended = true;
             }

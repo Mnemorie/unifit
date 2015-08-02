@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+[SelectionBase]
 public class Core : MonoBehaviour 
 {
     Vector3 lastUp;
@@ -12,6 +14,7 @@ public class Core : MonoBehaviour
     void Start()
     {
         HUD = FindObjectOfType<HUD>();
+        SetupAudio();
     }
 
     void Update()
@@ -43,6 +46,8 @@ public class Core : MonoBehaviour
 
         lastUp = transform.up;
         currentRotation = 0;
+
+        OnFloorCollision();
     }
 
     void OnCollisionStay(Collision col)
@@ -88,6 +93,45 @@ public class Core : MonoBehaviour
         return Mathf.Atan2(
             Vector3.Dot(n, Vector3.Cross(v1, v2)),
             Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
+    }
+
+    public AudioSource Output;
+
+    private Action OnFloorCollision = () => { };
+    public Action OnEnterZone = () => { };
+    public Action OnLeaveZone = () => { };
+    public Action OnWin = () => { };
+
+    public AudioClip CollisionSound;
+    public AudioClip EnterZoneSound;
+    public AudioClip LeaveZoneSound;
+    public AudioClip WinSound;
+
+    void SetupAudio()
+    {
+        OnFloorCollision += () =>
+        {
+            Output.clip = CollisionSound;
+            Output.Play();
+        };
+
+        OnEnterZone += () =>
+        {
+            Output.clip = EnterZoneSound;
+            Output.Play();
+        };
+
+        OnLeaveZone += () =>
+        {
+            Output.clip = LeaveZoneSound;
+            Output.Play();
+        };
+
+        OnWin += () =>
+        {
+            Output.clip = WinSound;
+            Output.Play();
+        };
     }
 
 }

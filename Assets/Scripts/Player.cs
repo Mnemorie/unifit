@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using GamepadInput;
 
@@ -132,7 +133,9 @@ public class Player : MonoBehaviour
         f.SetSmallFlameColor(SmallFlameColor);
 
         GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", EyeColor);
-	}
+
+        SetupAudio();
+    }
 
     public Vector2 DPadAxis;
     public Vector2 LeftAxis;
@@ -227,6 +230,8 @@ public class Player : MonoBehaviour
         Flame.transform.LookAt(transform.position + impulse);
 
         Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
+
+        OnRocket();
     }
 
     void Move(Vector3 motion)
@@ -270,6 +275,8 @@ public class Player : MonoBehaviour
         {
             Motor.Move(motion);
         }
+
+        OnSlide();
     }
 
     void FeedbackFail()
@@ -332,5 +339,28 @@ public class Player : MonoBehaviour
         }
         
         return Quaternion.AngleAxis(90, Vector3.left) * v;
+    }
+
+    public AudioSource Output;
+
+    public AudioClip SlideSound;
+    public AudioClip RocketSound;
+
+    public Action OnSlide = () => { };
+    public Action OnRocket = () => { };
+
+    void SetupAudio()
+    {
+        OnSlide += (() =>
+        {
+            Output.clip = SlideSound;
+            Output.Play();
+        });
+
+        OnRocket += (() =>
+        {
+            Output.clip = RocketSound;
+            Output.Play();
+        });
     }
 }

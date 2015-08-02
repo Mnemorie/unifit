@@ -86,7 +86,6 @@ public class HUD : MonoBehaviour
     void PopulateScoreBoard()
     {
         LevelTier[] tiers = FindObjectOfType<LevelTiers>().Tiers;
-        GameController game = FindObjectOfType<GameController>();
 
         for (int i = 0; i < tiers.Length; ++i)
         {

@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 
 	public int currentLevel;
     private bool LoadingLevel;
+    private bool Celebrating;
 
     HUD hud;
 
@@ -30,9 +31,19 @@ public class GameController : MonoBehaviour
         }
 	}
 
+    public float CelebrationTime = 4;
+
     void Update()
     {
-        if (LoadingLevel)
+        if (Celebrating)
+        {
+            CelebrationTime -= Time.deltaTime;
+            if (CelebrationTime <= 0)
+            {
+                LoadNextLevel();
+            }
+        }
+        else if (LoadingLevel)
         {
             if (Input.GetKeyDown(KeyCode.Escape) && currentLevel > 1)
             {
@@ -84,7 +95,7 @@ public class GameController : MonoBehaviour
 	}
 
 	public void WinLevel()
-    {
+	{
         string scoreKey = Application.loadedLevel + "-score";
         int currentScore = Mathf.FloorToInt(Time.timeSinceLevelLoad);
         if (!PlayerPrefs.HasKey(scoreKey) ||
@@ -92,8 +103,11 @@ public class GameController : MonoBehaviour
         {
             PlayerPrefs.SetInt(Application.loadedLevel + "-score", currentScore);
         }
-        
-		LoadNextLevel ();
+
+	    Celebrating = true;
+
+	    hud.Location.text = "A WINNER IS YOU";
+        hud.Hint.text = "A WINNER IS YOU";
 	}
 
     public void SkipLevel()
