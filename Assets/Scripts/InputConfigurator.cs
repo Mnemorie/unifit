@@ -101,7 +101,8 @@ public class InputConfigurator : MonoBehaviour
         }
 
         PlayerPrefs.Save();
-        Application.LoadLevel(1);
+
+        // Animator will load next level in Outro state (HURRAH FOR OBFUSCATION THROUGH "DATA")
     }
 
     void QuitWithoutSaving()
