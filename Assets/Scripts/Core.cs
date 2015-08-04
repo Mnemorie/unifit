@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.UI;
 
 [SelectionBase]
 public class Core : MonoBehaviour 
@@ -102,7 +99,7 @@ public class Core : MonoBehaviour
     public Action OnLeaveZone = () => { };
     public Action OnWin = () => { };
 
-    public AudioClip CollisionSound;
+    public AudioClip[] CollisionSound;
     public AudioClip EnterZoneSound;
     public AudioClip LeaveZoneSound;
     public AudioClip WinSound;
@@ -111,7 +108,7 @@ public class Core : MonoBehaviour
     {
         OnFloorCollision += () =>
         {
-            Output.clip = CollisionSound;
+            Output.clip = CollisionSound[UnityEngine.Random.Range(0, CollisionSound.Length)];
             Output.Play();
         };
 

@@ -343,8 +343,8 @@ public class Player : MonoBehaviour
 
     public AudioSource Output;
 
-    public AudioClip SlideSound;
-    public AudioClip RocketSound;
+    public AudioClip[] SlideSound;
+    public AudioClip[] RocketSound;
 
     public Action OnSlide = () => { };
     public Action OnRocket = () => { };
@@ -353,13 +353,13 @@ public class Player : MonoBehaviour
     {
         OnSlide += (() =>
         {
-            Output.clip = SlideSound;
+            Output.clip = SlideSound[UnityEngine.Random.Range(0, SlideSound.Length)];
             Output.Play();
         });
 
         OnRocket += (() =>
         {
-            Output.clip = RocketSound;
+            Output.clip = RocketSound[UnityEngine.Random.Range(0, RocketSound.Length)];
             Output.Play();
         });
     }
