@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EndsLevel : MonoBehaviour 
 {
-	public GameController gameController;
+	public GameController GameController;
 	public float TimeRequiredToWin;
 
 	public float TimeSpentInside;
@@ -17,7 +17,7 @@ public class EndsLevel : MonoBehaviour
 
 	void Start () 
     {
-        gameController = FindObjectOfType<GameController>();
+        GameController = FindObjectOfType<GameController>();
         Core = FindObjectOfType<Core>();
 
         Ended = false;
@@ -54,7 +54,7 @@ public class EndsLevel : MonoBehaviour
             if (TimeSpentInside > TimeRequiredToWin)
             {
                 Core.OnWin();
-                gameController.WinLevel();
+                GameController.WinLevel();
                 Ended = true;
             }
             else

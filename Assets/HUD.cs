@@ -19,10 +19,13 @@ public class HUD : MonoBehaviour
 
     float InitialScoreBoardDisplayTime;
 
+    private GameController GameController;
+
     void Start()
     {
         Location.text = BeautifyLevelName(Application.loadedLevelName);
         level = FindObjectOfType<LevelTemplate>();
+        GameController = FindObjectOfType<GameController>();
 
         PopulateScoreBoard();
 
@@ -34,10 +37,15 @@ public class HUD : MonoBehaviour
     float currentHintTextDisplayTime;
     bool showingHint;
 
+    float LevelTime;
+
     void Update()
     {
-        float levelTime = Time.timeSinceLevelLoad;
-        SubTitle.text = String.Format( "{0}:{1:D2}", Mathf.FloorToInt(levelTime / 60), Mathf.FloorToInt(levelTime) % 60 );
+        if (!GameController.Celebrating && !GameController.LoadingLevel)
+        {
+            LevelTime = Time.timeSinceLevelLoad;
+        }
+        SubTitle.text = String.Format("{0}:{1:D2}", Mathf.FloorToInt(LevelTime / 60), Mathf.FloorToInt(LevelTime) % 60);
 
         string score = level.GetCurrentScore();
 

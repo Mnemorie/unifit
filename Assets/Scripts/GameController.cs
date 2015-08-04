@@ -7,8 +7,8 @@ public class GameController : MonoBehaviour
     public float TimeToLoadNextLevel = 1;
 
 	public int currentLevel;
-    private bool LoadingLevel;
-    private bool Celebrating;
+    public bool LoadingLevel;
+    public bool Celebrating;
 
     HUD hud;
 
@@ -40,6 +40,7 @@ public class GameController : MonoBehaviour
             CelebrationTime -= Time.deltaTime;
             if (CelebrationTime <= 0)
             {
+                Celebrating = false;
                 LoadNextLevel();
             }
         }

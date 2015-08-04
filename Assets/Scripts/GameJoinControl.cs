@@ -67,8 +67,6 @@ public class GameJoinControl : MonoBehaviour
 		if (countDown > 0 ) 
         {
 			countDown =  3-(int)(Time.time - startedCountDownAtTime);
-		
-			CountDownText.text = countDown.ToString();
 		}
 
 		if ( AllPayersAreReady() && countDown <= 0) 
