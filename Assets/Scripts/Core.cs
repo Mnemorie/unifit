@@ -26,6 +26,8 @@ public class Core : MonoBehaviour
         {
             FindObjectOfType<GameController>().RestartLevel();
         }
+
+        CollisionSoundCoolDown -= Time.deltaTime;
     }
 
     void UpdateTricks()
@@ -104,12 +106,18 @@ public class Core : MonoBehaviour
     public AudioClip LeaveZoneSound;
     public AudioClip WinSound;
 
+    private float CollisionSoundCoolDown;
+
     void SetupAudio()
     {
         OnFloorCollision += () =>
         {
-            Output.clip = CollisionSound[UnityEngine.Random.Range(0, CollisionSound.Length)];
-            Output.Play();
+            if (CollisionSoundCoolDown < 0)
+            {
+                Output.clip = CollisionSound[UnityEngine.Random.Range(0, CollisionSound.Length)];
+                Output.Play();
+                CollisionSoundCoolDown = 0.5f;
+            }
         };
 
         OnEnterZone += () =>
