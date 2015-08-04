@@ -77,10 +77,17 @@ public class InputConfigurator : MonoBehaviour
 
     public Animator Animator;
 
+    private AudioSource AudioSource;
+
+    public AudioClip InputClip;
+    public AudioClip CancelClip;
+
 	void Start () 
     {
         CurrentPlayer = 1;
         CurrentPhase = ConfigurationPhase.SlideUp;
+
+	    AudioSource = GetComponent<AudioSource>();
     }
 
     void SaveAndQuit()
@@ -178,6 +185,10 @@ public class InputConfigurator : MonoBehaviour
             {
                 CurrentPhase = ConfigurationPhase.SlideUp;
             }
+
+            AudioSource.clip = CancelClip;
+            AudioSource.Play();
+
             return;
         }
 
@@ -278,6 +289,8 @@ public class InputConfigurator : MonoBehaviour
             {
                 fetchedKey = key;
                 CurrentPhase++;
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
         }
         else
@@ -291,6 +304,8 @@ public class InputConfigurator : MonoBehaviour
                 }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             else if (GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex).magnitude > 0.3f)
             {
@@ -301,6 +316,8 @@ public class InputConfigurator : MonoBehaviour
                 }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             else if (GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex).magnitude > 0.3f)
             {
@@ -311,6 +328,8 @@ public class InputConfigurator : MonoBehaviour
                 }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
         }
     }
@@ -324,6 +343,9 @@ public class InputConfigurator : MonoBehaviour
             {
                 fetchedKey = key;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
         }
         else
@@ -332,31 +354,49 @@ public class InputConfigurator : MonoBehaviour
             {
                 fetchedButton = GamePad.Button.A;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             else if (GamePad.GetButtonDown(GamePad.Button.B, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.B;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             else if (GamePad.GetButtonDown(GamePad.Button.X, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.X;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             else if (GamePad.GetButtonDown(GamePad.Button.Y, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.Y;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             if (GamePad.GetButtonDown(GamePad.Button.Back, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.Back;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
             else if (GamePad.GetButtonDown(GamePad.Button.Start, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.Start;
                 CurrentPhase++;
+
+                AudioSource.clip = InputClip;
+                AudioSource.Play();
             }
         }
     }
