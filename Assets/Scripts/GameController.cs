@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour
 
         if (hud)
         {
-            if (IsLevelUnlocked(currentLevel + 1))
+            if (IsLevelUnlocked(currentLevel))
             {
                 hud.ShowHint("Press SPACEBAR to skip to next level");
             }
@@ -97,12 +97,12 @@ public class GameController : MonoBehaviour
 
 	public void WinLevel()
 	{
-        string scoreKey = Application.loadedLevel + "-score";
+        string scoreKey = currentLevel + "-score";
         int currentScore = Mathf.FloorToInt(Time.timeSinceLevelLoad);
         if (!PlayerPrefs.HasKey(scoreKey) ||
             PlayerPrefs.GetInt(scoreKey) > currentScore)
         {
-            PlayerPrefs.SetInt(Application.loadedLevel + "-score", currentScore);
+            PlayerPrefs.SetInt(currentLevel + "-score", currentScore);
         }
 
 	    Celebrating = true;
@@ -113,7 +113,7 @@ public class GameController : MonoBehaviour
 
     public void SkipLevel()
     {
-        if (IsLevelUnlocked(Application.loadedLevel))
+        if (IsLevelUnlocked(currentLevel))
         {
             LoadNextLevel();
         }
@@ -126,7 +126,7 @@ public class GameController : MonoBehaviour
 
     public bool IsLevelUnlocked(int level)
     {
-        return PlayerPrefs.HasKey(level + "-score");
+        return PlayerPrefs.HasKey((level) + "-score");
     }
 
     public int GetCompletedLevelScore(int level)
