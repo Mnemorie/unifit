@@ -56,6 +56,21 @@ public class Node : MonoBehaviour
         return Physics.Raycast(ray, out hit, 1.4f, 1 << LayerMask.NameToLayer("floor"));
     }
 
+    public static bool PickFloorWithDistance(Transform trf, Vector3 offset, Vector3 dir, out float distance)
+    {
+        Ray ray = new Ray(trf.position + offset, trf.TransformDirection(dir));
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 1.4f, 1 << LayerMask.NameToLayer("floor")))
+        {
+            distance = hit.distance;
+            return true;
+        }
+
+        distance = -1f;
+        return false;
+    }
+
     public bool IsConnectedToCoreBy(Node node)
     {
         List<Node> graph = new List<Node>();

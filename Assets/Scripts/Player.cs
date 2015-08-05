@@ -207,6 +207,8 @@ public class Player : MonoBehaviour
 
     private float FlameOffset = 0.5f;
 
+    public AnimationCurve RocketFalloffCurve;
+
     void FirePiston(Vector3 direction)
     {
         if (Node.PickNode(transform, Vector3.zero, direction) != null)
@@ -217,9 +219,11 @@ public class Player : MonoBehaviour
 
         Vector3 impulse = -transform.TransformDirection(direction) * Power;
 
-        if (Node.PickFloor(transform, Vector3.zero, direction))
+        float distance;
+        if (Node.PickFloorWithDistance(transform, Vector3.zero, direction, out distance))
         {
-            impulse *= FloorPushMultiplier;
+            impulse *= Mathf.Lerp(1, FloorPushMultiplier, RocketFalloffCurve.Evaluate(distance - 0.5f));
+            Debug.Log("multiplier " + Mathf.Lerp(1, FloorPushMultiplier, RocketFalloffCurve.Evaluate(distance - 0.5f)));
         }
 
         Body.AddForceAtPosition(impulse, transform.position, ForceMode.Impulse);
