@@ -44,12 +44,19 @@ public class HUD : MonoBehaviour
         if (!GameController.Celebrating && !GameController.LoadingLevel)
         {
             LevelTime = Time.timeSinceLevelLoad;
-            SubTitle.text = String.Format("{0}:{1:D2}", Mathf.FloorToInt(LevelTime / 60), Mathf.FloorToInt(LevelTime) % 60);
+            string scoreText = String.Format("{0}:{1:D2}", Mathf.FloorToInt(LevelTime / 60), Mathf.FloorToInt(LevelTime) % 60);
+            if (SubTitle.text != scoreText)
+            {
+                SubTitle.text = scoreText;
+            }
 
             string score = level.GetCurrentScore();
 
-            Lettrine.text = score;
-            Lettrine.material.color = level.GetScoreColor(score);
+            if (score != Lettrine.text)
+            {
+                Lettrine.text = score;
+                Lettrine.material.color = level.GetScoreColor(score);
+            }
         }
 
         if (showingHint)
