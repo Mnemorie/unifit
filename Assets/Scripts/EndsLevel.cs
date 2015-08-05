@@ -56,6 +56,7 @@ public class EndsLevel : MonoBehaviour
                 Core.OnWin();
                 GameController.WinLevel();
                 Ended = true;
+                TimerDisplay.enabled = false;
             }
             else
             {
