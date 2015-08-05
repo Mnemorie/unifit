@@ -82,12 +82,14 @@ public class InputConfigurator : MonoBehaviour
     public AudioClip InputClip;
     public AudioClip CancelClip;
 
-	void Start () 
+	void Start() 
     {
         CurrentPlayer = 1;
         CurrentPhase = ConfigurationPhase.SlideUp;
 
 	    SoundBoard = FindObjectOfType<SoundBoard>();
+
+        Cursor.visible = false;
     }
 
     void PlaySound(AudioClip clip, Transform location = null)

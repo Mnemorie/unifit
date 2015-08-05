@@ -12,6 +12,8 @@ public class Core : MonoBehaviour
     {
         HUD = FindObjectOfType<HUD>();
         SetupAudio();
+
+        Cursor.visible = false;
     }
 
     void Update()
