@@ -107,8 +107,8 @@ public class GameController : MonoBehaviour
 
 	    Celebrating = true;
 
-	    hud.Location.text = "A WINNER IS YOU";
-        hud.Hint.text = "A WINNER IS YOU";
+	    hud.Location.text = "MISSION SUCCESSFUL";
+        hud.Hint.text = "TRAVELING TO NEXT LEVEL";
 	}
 
     public void SkipLevel()
