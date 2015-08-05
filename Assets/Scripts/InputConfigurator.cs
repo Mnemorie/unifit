@@ -77,7 +77,7 @@ public class InputConfigurator : MonoBehaviour
 
     public Animator Animator;
 
-    private AudioSource AudioSource;
+    private SoundBoard SoundBoard;
 
     public AudioClip InputClip;
     public AudioClip CancelClip;
@@ -87,7 +87,15 @@ public class InputConfigurator : MonoBehaviour
         CurrentPlayer = 1;
         CurrentPhase = ConfigurationPhase.SlideUp;
 
-	    AudioSource = GetComponent<AudioSource>();
+	    SoundBoard = FindObjectOfType<SoundBoard>();
+    }
+
+    void PlaySound(AudioClip clip, Transform location = null)
+    {
+        if (SoundBoard)
+        {
+            SoundBoard.Play(clip, location);
+        }
     }
 
     void SaveAndQuit()
@@ -148,7 +156,9 @@ public class InputConfigurator : MonoBehaviour
         }
     }
 
-	void Update () 
+    public Transform[] Players;
+    
+    void Update () 
     {
         AnimatorStateInfo state = Animator.GetCurrentAnimatorStateInfo(0);
 
@@ -187,8 +197,7 @@ public class InputConfigurator : MonoBehaviour
                 CurrentPhase = ConfigurationPhase.SlideUp;
             }
 
-            AudioSource.clip = CancelClip;
-            AudioSource.Play();
+            PlaySound(CancelClip, Players[CurrentPlayer-1]);
 
             return;
         }
@@ -290,8 +299,7 @@ public class InputConfigurator : MonoBehaviour
             {
                 fetchedKey = key;
                 CurrentPhase++;
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
         }
         else
@@ -305,8 +313,7 @@ public class InputConfigurator : MonoBehaviour
                 }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             else if (GamePad.GetAxis(GamePad.Axis.LeftStick, GamePadIndex).magnitude > 0.3f)
             {
@@ -317,8 +324,7 @@ public class InputConfigurator : MonoBehaviour
                 }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             else if (GamePad.GetAxis(GamePad.Axis.RightStick, GamePadIndex).magnitude > 0.3f)
             {
@@ -329,8 +335,7 @@ public class InputConfigurator : MonoBehaviour
                 }
                 CurrentPhase++;
                 WaitingForAxisReset = true;
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
         }
     }
@@ -345,8 +350,7 @@ public class InputConfigurator : MonoBehaviour
                 fetchedKey = key;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
         }
         else
@@ -356,48 +360,42 @@ public class InputConfigurator : MonoBehaviour
                 fetchedButton = GamePad.Button.A;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             else if (GamePad.GetButtonDown(GamePad.Button.B, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.B;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             else if (GamePad.GetButtonDown(GamePad.Button.X, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.X;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             else if (GamePad.GetButtonDown(GamePad.Button.Y, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.Y;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             if (GamePad.GetButtonDown(GamePad.Button.Back, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.Back;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
             else if (GamePad.GetButtonDown(GamePad.Button.Start, GamePadIndex))
             {
                 fetchedButton = GamePad.Button.Start;
                 CurrentPhase++;
 
-                AudioSource.clip = InputClip;
-                AudioSource.Play();
+                PlaySound(InputClip, Players[CurrentPlayer - 1]);
             }
         }
     }

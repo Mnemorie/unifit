@@ -94,8 +94,6 @@ public class Core : MonoBehaviour
             Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
     }
 
-    public AudioSource Output;
-
     private Action OnFloorCollision = () => { };
     public Action OnEnterZone = () => { };
     public Action OnLeaveZone = () => { };
@@ -108,35 +106,44 @@ public class Core : MonoBehaviour
 
     private float CollisionSoundCoolDown;
 
+    private SoundBoard SoundBoard;
+
+    void PlaySound(AudioClip clip)
+    {
+        if (SoundBoard)
+        {
+            SoundBoard.Play(clip, transform);
+        }
+    }
+
+    void PlaySound(AudioClip[] clips)
+    {
+        if (SoundBoard)
+        {
+            SoundBoard.PlayAny(clips, transform);
+        }
+    }
+
     void SetupAudio()
     {
-        OnFloorCollision += () =>
+        SoundBoard = FindObjectOfType<SoundBoard>();
+
+        if (SoundBoard)
         {
-            if (CollisionSoundCoolDown < 0)
+            OnFloorCollision += () =>
             {
-                Output.clip = CollisionSound[UnityEngine.Random.Range(0, CollisionSound.Length)];
-                Output.Play();
-                CollisionSoundCoolDown = 0.5f;
-            }
-        };
+                if (CollisionSoundCoolDown < 0)
+                {
+                    PlaySound(CollisionSound);
+                    CollisionSoundCoolDown = 0.5f;
+                }
+            };
 
-        OnEnterZone += () =>
-        {
-            Output.clip = EnterZoneSound;
-            Output.Play();
-        };
+            OnEnterZone += () => PlaySound(EnterZoneSound);
+            OnLeaveZone += () => PlaySound(LeaveZoneSound);
+            OnWin += () => PlaySound(WinSound);
+        }
 
-        OnLeaveZone += () =>
-        {
-            Output.clip = LeaveZoneSound;
-            Output.Play();
-        };
-
-        OnWin += () =>
-        {
-            Output.clip = WinSound;
-            Output.Play();
-        };
     }
 
 }

@@ -1,19 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class PlayConfigSound : StateMachineBehaviour 
 {
     public AudioClip Clip;
-    private AudioSource Source;
+    public string Location;
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) 
-    {
-        Source = FindObjectOfType<InputConfigurator>().GetComponent<AudioSource>();
-
-	    Source.Stop();
-        Source.clip = Clip;
-        Source.Play();
+	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	{
+	    FindObjectOfType<SoundBoard>().Play(Clip, animator.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.gameObject.name == Location));
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

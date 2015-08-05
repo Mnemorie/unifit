@@ -341,7 +341,22 @@ public class Player : MonoBehaviour
         return Quaternion.AngleAxis(90, Vector3.left) * v;
     }
 
-    public AudioSource Output;
+    	    
+    void PlaySound(AudioClip clip, Transform location = null)
+    {
+        if (SoundBoard)
+        {
+            SoundBoard.Play(clip, location);
+        }
+    }
+
+    void PlaySound(AudioClip[] clips, Transform location = null)
+    {
+        if (SoundBoard)
+        {
+            SoundBoard.PlayAny(clips, location);
+        }
+    }
 
     public AudioClip[] SlideSound;
     public AudioClip[] RocketSound;
@@ -349,18 +364,17 @@ public class Player : MonoBehaviour
     public Action OnSlide = () => { };
     public Action OnRocket = () => { };
 
+    private SoundBoard SoundBoard;
+
     void SetupAudio()
     {
-        OnSlide += (() =>
-        {
-            Output.clip = SlideSound[UnityEngine.Random.Range(0, SlideSound.Length)];
-            Output.Play();
-        });
+        SoundBoard = FindObjectOfType<SoundBoard>();
 
-        OnRocket += (() =>
+        if (SoundBoard)
         {
-            Output.clip = RocketSound[UnityEngine.Random.Range(0, RocketSound.Length)];
-            Output.Play();
-        });
+            OnSlide += (() => PlaySound(SlideSound));
+            OnRocket += (() => PlaySound(RocketSound));
+        }
+        
     }
 }
