@@ -140,22 +140,22 @@ public class GamepadMapping : Mapping
 
     public override bool RocketUp()
     {
-        return GamePad.GetButtonDown(GamePadRocketUp, GamePadIndex);
+        return GamePad.GetButton(GamePadRocketUp, GamePadIndex);
     }
 
     public override bool RocketDown()
     {
-        return GamePad.GetButtonDown(GamePadRocketDown, GamePadIndex);
+        return GamePad.GetButton(GamePadRocketDown, GamePadIndex);
     }
 
     public override bool RocketLeft()
     {
-        return GamePad.GetButtonDown(GamePadRocketLeft, GamePadIndex);
+        return GamePad.GetButton(GamePadRocketLeft, GamePadIndex);
     }
 
     public override bool RocketRight()
     {
-        return GamePad.GetButtonDown(GamePadRocketRight, GamePadIndex);
+        return GamePad.GetButton(GamePadRocketRight, GamePadIndex);
     }
 
     public GamepadMapping(int player)
