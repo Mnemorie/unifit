@@ -161,22 +161,22 @@ public class Player : MonoBehaviour
         {
             if (controller.RocketUpJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.up));
+                FirePiston(Vector3.up);
             }
 
             if (controller.RocketDownJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.down));
+                FirePiston(Vector3.down);
             }
 
             if (controller.RocketLeftJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.back));
+                FirePiston(Vector3.back);
             }
 
             if (controller.RocketRightJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.forward));
+                FirePiston(Vector3.forward);
             }
         }
 
@@ -211,13 +211,13 @@ public class Player : MonoBehaviour
 
     void FirePiston(Vector3 direction)
     {
-        if (Node.PickNode(transform, Vector3.zero, direction) != null)
-        {
-            FeedbackFail();
-            return;
-        }
+        //if (Node.PickNode(transform, Vector3.zero, direction) != null)
+        //{
+        //    FeedbackFail();
+        //    return;
+        //}
 
-        Vector3 impulse = -transform.TransformDirection(direction) * Power;
+        Vector3 impulse = -direction * Power;
 
         float distance;
         if (Node.PickFloorWithDistance(transform, Vector3.zero, direction, out distance))
@@ -230,10 +230,13 @@ public class Player : MonoBehaviour
 
         TimeToPiston = PistonCooldown;
 
-        Flame.transform.localPosition = direction * FlameOffset;
-        Flame.transform.LookAt(transform.position + impulse);
+        if (Node.PickNode(transform, Vector3.zero, TransformMotionVectorToLocal(direction)) == null)
+        {
+            Flame.transform.localPosition = TransformMotionVectorToLocal(direction) * FlameOffset;
+            Flame.transform.LookAt(transform.position - transform.TransformDirection(TransformMotionVectorToLocal(direction)));
 
-        Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
+            Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
+        }
 
         OnRocket();
     }
