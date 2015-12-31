@@ -88,6 +88,26 @@ public class Controller
     {
         return !previousInput.RocketRight && currentInput.RocketRight;
     }
+
+    public bool RocketUpHeld()
+    {
+        return currentInput.RocketUp;
+    }
+
+    public bool RocketDownHeld()
+    {
+        return currentInput.RocketDown;
+    }
+
+    public bool RocketLeftHeld()
+    {
+        return currentInput.RocketLeft;
+    }
+
+    public bool RocketRightHeld()
+    {
+        return currentInput.RocketRight;
+    }
 }
 
 [SelectionBase]
@@ -110,6 +130,8 @@ public class Player : MonoBehaviour
     public Color EyeColor;
     public Color BigFlameColor;
     public Color SmallFlameColor;
+
+    public float FuelLevel = 1;
 
     private Controller CreateController()
     {
@@ -148,6 +170,8 @@ public class Player : MonoBehaviour
 
     void Update () 
     {
+        TimeSinceLastPropulsion += Time.deltaTime;
+
         controller.Update();
 
         TimeToPiston -= Time.deltaTime;
@@ -161,23 +185,44 @@ public class Player : MonoBehaviour
         {
             if (controller.RocketUpJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.up));
+                FirePiston(Vector3.up);
             }
 
             if (controller.RocketDownJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.down));
+                FirePiston(Vector3.down);
             }
 
             if (controller.RocketLeftJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.back));
+                FirePiston(Vector3.back);
             }
 
             if (controller.RocketRightJustPressed())
             {
-                FirePiston(TransformMotionVectorToLocal(Vector3.forward));
+                FirePiston(Vector3.forward);
             }
+        }
+
+        if (controller.RocketUpHeld())
+        {
+            HoldPiston(Vector3.up);
+        }
+        else if (controller.RocketDownHeld())
+        {
+            HoldPiston(Vector3.down);
+        }
+        else if (controller.RocketLeftHeld())
+        {
+            HoldPiston(Vector3.back);
+        }
+        else if (controller.RocketRightHeld())
+        {
+            HoldPiston(Vector3.forward);
+        }
+        else
+        {
+            FuelLevel = Mathf.Min(1, FuelLevel + (Time.deltaTime*0.66f));
         }
 
         if (controller.SlideLeftJustPressed() && !Motor.IsAnybodyMoving)
@@ -200,6 +245,7 @@ public class Player : MonoBehaviour
             Move(TransformMotionVectorToLocal(Vector3.down));
         }
 
+        GetComponentInChildren<Renderer>().material.SetFloat("_RangeMin", 1 - (FuelLevel * 1));
 	}
 
     public float Power = 10;
@@ -209,33 +255,51 @@ public class Player : MonoBehaviour
 
     public AnimationCurve RocketFalloffCurve;
 
+    private float TimeSinceLastPropulsion;
+
     void FirePiston(Vector3 direction)
     {
-        if (Node.PickNode(transform, Vector3.zero, direction) != null)
-        {
-            FeedbackFail();
-            return;
-        }
+        //if (Node.PickNode(transform, Vector3.zero, direction) != null)
+        //{
+        //    FeedbackFail();
+        //    return;
+        //}
 
-        Vector3 impulse = -transform.TransformDirection(direction) * Power;
+        Vector3 impulse = -direction * Power;
 
         float distance;
-        if (Node.PickFloorWithDistance(transform, Vector3.zero, direction, out distance))
+        if (Node.PickFloorWithDistance(transform, Vector3.zero, TransformMotionVectorToLocal(direction), out distance))
         {
             impulse *= Mathf.Lerp(1, FloorPushMultiplier, RocketFalloffCurve.Evaluate(distance - 0.5f));
-            Debug.Log("multiplier " + Mathf.Lerp(1, FloorPushMultiplier, RocketFalloffCurve.Evaluate(distance - 0.5f)));
         }
 
         Body.AddForceAtPosition(impulse, transform.position, ForceMode.Impulse);
 
         TimeToPiston = PistonCooldown;
 
-        Flame.transform.localPosition = direction * FlameOffset;
-        Flame.transform.LookAt(transform.position + impulse);
+        if (Node.PickNode(transform, Vector3.zero, TransformMotionVectorToLocal(direction)) == null)
+        {
+            Flame.transform.localPosition = TransformMotionVectorToLocal(direction) * FlameOffset;
+            Flame.transform.LookAt(transform.position - transform.TransformDirection(TransformMotionVectorToLocal(direction)));
 
-        Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
+            Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
+        }
+
+        TimeSinceLastPropulsion = 0;
 
         OnRocket();
+    }
+
+    public AnimationCurve PistonAttenuation;
+    public float PistonHoldMultiplier = 2;
+
+    void HoldPiston(Vector3 direction)
+    {
+        Body.AddForceAtPosition(-direction * PistonAttenuation.Evaluate(TimeSinceLastPropulsion) * PistonHoldMultiplier * FuelLevel, transform.position, ForceMode.Force);
+
+        FuelLevel = Mathf.Max(0, FuelLevel - Time.deltaTime);
+
+        Debug.Log("fuel level " + FuelLevel);
     }
 
     void Move(Vector3 motion)
