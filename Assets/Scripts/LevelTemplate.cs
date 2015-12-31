@@ -5,6 +5,11 @@ public class LevelTemplate : MonoBehaviour
 {
     public string GetCurrentScore()
     {
+        if (Application.loadedLevel <= 0)
+        {
+            return "X";
+        }
+
         float time = Time.timeSinceLevelLoad;
         LevelTier tiers = FindObjectOfType<LevelTiers>().Tiers[Application.loadedLevel - 1];
 

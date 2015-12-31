@@ -11,17 +11,29 @@ public class EndsLevel : MonoBehaviour
 
     public Renderer TimerDisplay;
 
-    Core Core;
+    protected Core Core;
 
     bool Ended;
 
-	void Start () 
+	protected virtual void Start () 
     {
         GameController = FindObjectOfType<GameController>();
         Core = FindObjectOfType<Core>();
 
         Ended = false;
 	}
+
+    protected virtual bool IsValid()
+    {
+        return Vector3.Distance(transform.position, Core.transform.position) < ProximityGoal;
+    }
+
+    protected virtual void AnimateValid()
+    {
+        TimerDisplay.enabled = true;
+        float displayProgress = (1 - (TimeSpentInside / TimeRequiredToWin)) * 0.5f;
+        TimerDisplay.material.SetTextureOffset("_MainTex", new Vector2(0, displayProgress));
+    }
 
     void FixedUpdate()
     {
@@ -30,7 +42,7 @@ public class EndsLevel : MonoBehaviour
             return;
         }
 
-        if (Vector3.Distance(transform.position, Core.transform.position) < ProximityGoal)
+        if (IsValid())
         {
             if (TimeSpentInside <= 0)
             {
@@ -60,9 +72,7 @@ public class EndsLevel : MonoBehaviour
             }
             else
             {
-                TimerDisplay.enabled = true;
-                float displayProgress = (1 - (TimeSpentInside / TimeRequiredToWin)) * 0.5f;
-                TimerDisplay.material.SetTextureOffset("_MainTex", new Vector2(0, displayProgress));
+                AnimateValid();
             }
         }
         else
