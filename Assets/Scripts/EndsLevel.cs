@@ -23,7 +23,7 @@ public class EndsLevel : MonoBehaviour
         Ended = false;
 	}
 
-    protected virtual bool IsValid()
+    public virtual bool IsValid()
     {
         return Vector3.Distance(transform.position, Core.transform.position) < ProximityGoal;
     }
