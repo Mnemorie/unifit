@@ -3,8 +3,9 @@ using System.Collections;
 
 public class FollowsObject : MonoBehaviour 
 {
-	public Vector3 offSet;
+	public Vector3 offset;
 	public Vector2 responsiveness;
+    public float offsetRatio = 0.25f;
 
     Transform FollowThis;
     Transform EndGoal;
@@ -35,16 +36,16 @@ public class FollowsObject : MonoBehaviour
             return;
 	    }
 
-        offSet.y = BaseHeight + ((EndGoal.position.y - FollowThis.transform.position.y) * 0.25f);
-        offSet.z = (EndGoal.position.z - FollowThis.transform.position.z) * 0.25f;
+        offset.y = BaseHeight + ((EndGoal.position.y - FollowThis.transform.position.y) * offsetRatio);
+        offset.z = (EndGoal.position.z - FollowThis.transform.position.z) * offsetRatio;
 
-		//this.transform.position = Vector3.Lerp(this.transform.position, followThis.transform.position + offSet, responsiveness );
+		//this.transform.position = Vector3.Lerp(this.transform.position, followThis.transform.position + offset, responsiveness );
 		this.transform.position = new Vector3(
 			transform.position.x,
-            Mathf.Lerp(this.transform.position.y, FollowThis.transform.position.y + offSet.y, responsiveness.y),
-            FollowThis.transform.position.z + offSet.z);
-		//this.transform.position.y = Mathf.Lerp(this.transform.position.y, followThis.transform.position.y + offSet.y, responsiveness.y );
-		//this.transform.position.z = followThis.transform.position + offSet.z;
-		//this.transform.position = new Vector3(this.transform.position.x, offSet.y, this.transform.position.z ); 
+            Mathf.Lerp(this.transform.position.y, FollowThis.transform.position.y + offset.y, responsiveness.y),
+            FollowThis.transform.position.z + offset.z);
+		//this.transform.position.y = Mathf.Lerp(this.transform.position.y, followThis.transform.position.y + offset.y, responsiveness.y );
+		//this.transform.position.z = followThis.transform.position + offset.z;
+		//this.transform.position = new Vector3(this.transform.position.x, offset.y, this.transform.position.z ); 
 	}
 }
