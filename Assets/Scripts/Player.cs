@@ -118,7 +118,16 @@ public class Player : MonoBehaviour
     private Node Node;
     private Motor Motor;
     private Rigidbody Body;
-    public GameObject Flame;
+    
+    public Animator TopFlame;
+    public Animator BottomFlame;
+    public Animator LeftFlame;
+    public Animator RightFlame;
+
+    public Animator TopSpark;
+    public Animator BottomSpark;
+    public Animator LeftSpark;
+    public Animator RightSpark;
 
     Controller controller;
 
@@ -128,8 +137,6 @@ public class Player : MonoBehaviour
     public float PistonCooldown = 1;
 
     public Color EyeColor;
-    public Color BigFlameColor;
-    public Color SmallFlameColor;
 
     public float FuelLevel = 1;
 
@@ -147,12 +154,12 @@ public class Player : MonoBehaviour
 
         Body = GetComponentInParent<Rigidbody>();
 
-        Flame = Instantiate(Flame, transform.position, transform.rotation) as GameObject;
-        Flame.transform.parent = transform;
+        //Flame = Instantiate(Flame, transform.position, transform.rotation) as GameObject;
+        //Flame.transform.parent = transform;
         
-        Flame f = Flame.GetComponent<Flame>();
-        f.SetBigFlameColor(BigFlameColor);
-        f.SetSmallFlameColor(SmallFlameColor);
+        //Flame f = Flame.GetComponent<Flame>();
+        //f.SetBigFlameColor(BigFlameColor);
+        //f.SetSmallFlameColor(SmallFlameColor);
 
         GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", EyeColor);
 
@@ -170,6 +177,8 @@ public class Player : MonoBehaviour
 
     void Update () 
     {
+        LeftFlame.SetFloat("FlameSize", PistonAttenuation.Evaluate(TimeSinceLastPropulsion));
+
         TimeSinceLastPropulsion += Time.deltaTime;
 
         controller.Update();
@@ -178,7 +187,7 @@ public class Player : MonoBehaviour
 
         if (TimeToPiston < PistonCooldown / 2)
         {
-            Flame.GetComponentInChildren<Animator>().SetBool("Burning", false);
+            //Flame.GetComponentInChildren<Animator>().SetBool("Burning", false);
         }
 
         if (TimeToPiston <= 0)
@@ -259,11 +268,7 @@ public class Player : MonoBehaviour
 
     void FirePiston(Vector3 direction)
     {
-        //if (Node.PickNode(transform, Vector3.zero, direction) != null)
-        //{
-        //    FeedbackFail();
-        //    return;
-        //}
+        LeftSpark.SetTrigger("Burst");
 
         Vector3 impulse = -direction * Power;
 
@@ -279,10 +284,10 @@ public class Player : MonoBehaviour
 
         if (Node.PickNode(transform, Vector3.zero, TransformMotionVectorToLocal(direction)) == null)
         {
-            Flame.transform.localPosition = TransformMotionVectorToLocal(direction) * FlameOffset;
-            Flame.transform.LookAt(transform.position - transform.TransformDirection(TransformMotionVectorToLocal(direction)));
+            //Flame.transform.localPosition = TransformMotionVectorToLocal(direction) * FlameOffset;
+            //Flame.transform.LookAt(transform.position - transform.TransformDirection(TransformMotionVectorToLocal(direction)));
 
-            Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
+            //Flame.GetComponentInChildren<Animator>().SetBool("Burning", true);
         }
 
         TimeSinceLastPropulsion = 0;
@@ -298,8 +303,6 @@ public class Player : MonoBehaviour
         Body.AddForceAtPosition(-direction * PistonAttenuation.Evaluate(TimeSinceLastPropulsion) * PistonHoldMultiplier * FuelLevel, transform.position, ForceMode.Force);
 
         FuelLevel = Mathf.Max(0, FuelLevel - Time.deltaTime);
-
-        Debug.Log("fuel level " + FuelLevel);
     }
 
     void Move(Vector3 motion)
