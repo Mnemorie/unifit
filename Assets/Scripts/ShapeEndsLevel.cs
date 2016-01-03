@@ -4,9 +4,9 @@ using System.Linq;
 
 public class ShapeEndsLevel : EndsLevel
 {
-    protected override bool IsValid()
+    public override bool IsValid()
     {
-        return Heads.All(head => Colliders.Any(collider => collider.bounds.Intersects(head.bounds)));
+        return SubGoals.All(subgoal => subgoal.IsValid());
     }
 
     protected override void AnimateValid()
@@ -14,14 +14,21 @@ public class ShapeEndsLevel : EndsLevel
         base.AnimateValid();
     }
 
-    private List<Collider> Colliders;
+    private List<SubGoal> SubGoals;
     private List<Collider> Heads;
 
     protected override void Start ()
 	{
 	    base.Start();
 
-        Colliders = new List<Collider>(GetComponentsInChildren<Collider>());
+        SubGoals = new List<SubGoal>(GetComponentsInChildren<SubGoal>());
         Heads = new List<Collider>(Core.GetComponentsInChildren<Collider>());
+
+        var subGoals = GetComponentsInChildren<SubGoal>();
+        foreach (var subgoal in subGoals)
+        {
+            subgoal.Heads = Heads;
+            subgoal.RootGoal = this;
+        }
     }
 }
