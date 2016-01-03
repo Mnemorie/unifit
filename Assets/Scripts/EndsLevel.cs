@@ -3,13 +3,11 @@ using System.Collections;
 
 public class EndsLevel : MonoBehaviour 
 {
-	public GameController GameController;
+	private GameController GameController;
 	public float TimeRequiredToWin;
 
-	public float TimeSpentInside;
+	protected float TimeSpentInside;
     public float ProximityGoal = 1;
-
-    public Renderer TimerDisplay;
 
     protected Core Core;
 
@@ -30,9 +28,6 @@ public class EndsLevel : MonoBehaviour
 
     protected virtual void AnimateValid()
     {
-        TimerDisplay.enabled = true;
-        float displayProgress = (1 - (TimeSpentInside / TimeRequiredToWin)) * 0.5f;
-        TimerDisplay.material.SetTextureOffset("_MainTex", new Vector2(0, displayProgress));
     }
 
     void FixedUpdate()
@@ -68,21 +63,11 @@ public class EndsLevel : MonoBehaviour
                 Core.OnWin();
                 GameController.WinLevel();
                 Ended = true;
-                TimerDisplay.enabled = false;
             }
             else
             {
                 AnimateValid();
             }
         }
-        else
-        {
-            TimerDisplay.enabled = false;
-        }
     }
-
-    public GUISkin Skin;
-    public Color TimerColor;
-
-    public int TimerVerticalOffset = 100;
 }
