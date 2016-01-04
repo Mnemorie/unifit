@@ -254,7 +254,7 @@ public class Player : MonoBehaviour
             Move(TransformMotionVectorToLocal(Vector3.down));
         }
 
-        GetComponentInChildren<Renderer>().material.SetFloat("_RangeMin", 1 - (FuelLevel * 1));
+        //GetComponentInChildren<Renderer>().material.SetFloat("_RangeMin", 1 - (FuelLevel * 1));
 	}
 
     public float Power = 10;
